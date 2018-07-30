@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="bloodGlucoseMst">
+
+	<!-- 병원목록 조회 -->
+	 <select id="selectMeasurePointList" resultClass="retail.bloodGlucoseMst.service.BloodGlucoseMstVO" parameterClass="String">
+ 	 	SELECT
+		    CD_ID AS BS_MEASURE_POINT
+		    ,CD_NM AS BS_MEASURE_POINT_NM
+		FROM 
+		    TBL_COMM_CODE_INFO
+		WHERE 
+		    CD_CL='CD0001'    
+		    AND DEL_YN='N'
+		    AND  LNG_GB=#LANG#
+		ORDER BY SORT_ORDER
+	 </select>
+	 
+	 <!-- 혈당측정입력 -->
+	<update id="insertBsMeasureInfo" parameterClass="java.util.HashMap">
+		DECLARE BEGIN
+			UPDATE TBL_BS_MEASURE_INFO
+			   SET DEL_YN = 'Y'
+			 WHERE MEASURE_DT = #MEASURE_DT#
+			   AND BS_MEASURE_POINT = #BS_MEASURE_POINT#
+			;
+			
+			<![CDATA[
+			INSERT INTO TBL_BS_MEASURE_INFO
+			(
+			    MEASURE_SEQ
+			    ,PATIENT_CD
+			    ,BS_MEASURE_VALUE
+			    ,BS_MEASURE_UNIT
+			    ,MEASURE_DT
+			    ,MEASURE_TIME
+			    ,BS_MEASURE_POINT
+			    ,BS_STATE
+			    ,DEL_YN
+			    ,REG_DTTM    
+			)
+				SELECT  
+				    BS_MEASURE_SEQ.NEXTVAL
+				    ,#PATIENT_CD#
+				    ,CRYPTO_AES256.ENC_AES(#BS_MEASURE_VALUE#)
+				    ,'mg/dl'
+				    ,#MEASURE_DT#
+			    	,#MEASURE_TIME#
+			    	,#BS_MEASURE_POINT#
+				    ,DISEASE_STATE 
+				    ,'N'
+				    ,SYSDATE
+				FROM 
+					TBL_DISEASE_STDR_INFO 
+				WHERE 
+					DISEASE_CD='0001' 
+					AND MEASURE_GB=#BS_MEASURE_POINT# 
+					AND STDR_VALUE_FROM<=#BS_MEASURE_VALUE# 
+					AND STDR_VALUE_TO>=#BS_MEASURE_VALUE#
+			]]>
+			;
+		END;
+	</update>
+	
+	<!-- 혈당측정업데이트 -->
+	<update id="updateBsMeasureInfo" parameterClass="java.util.HashMap">
+		<![CDATA[
+			UPDATE TBL_BS_MEASURE_INFO SET
+			(
+			    BS_MEASURE_VALUE 
+			    ,BS_MEASURE_UNIT
+			    ,MEASURE_DT
+			    ,MEASURE_TIME
+			    ,BS_MEASURE_POINT
+			    ,BS_STATE
+			    ,DEL_YN
+			    ,REG_DTTM 
+			)
+			=
+			(
+			    SELECT  
+			        CRYPTO_AES256.ENC_AES(#BS_MEASURE_VALUE#)
+			        ,'mg/dl'
+			        ,#MEASURE_DT#
+			        ,#MEASURE_TIME#
+			        ,#BS_MEASURE_POINT# 
+			        ,DISEASE_STATE 
+			        ,'N'
+			        ,SYSDATE
+			    FROM TBL_DISEASE_STDR_INFO 
+			    WHERE DISEASE_CD='0001' AND MEASURE_GB=#BS_MEASURE_POINT#  AND STDR_VALUE_FROM<=#BS_MEASURE_VALUE#  AND STDR_VALUE_TO>=#BS_MEASURE_VALUE# 
+			)
+			WHERE MEASURE_SEQ=#MEASURE_SEQ#
+		]]>
+	</update>
+	
+	
+</sqlMap>

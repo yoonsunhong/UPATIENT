@@ -1,0 +1,444 @@
+@charset "utf-8";
+/*========== 공통 ==========*/
+/* 레이아웃 */
+#wrap{height:100%}
+.area, #header .area > div{width:90%;margin:0 auto;}
+#header{display:table;width:100%;height:40px;line-height:40px;background-color:#0ab4ed}
+#header .area .t_l{text-align:left}
+#header .area .t_r{text-align:right}
+#header .area > div{position:relative;width:100%;}
+#header .tit{text-align:center;font-size:1.25em;color:#fff}
+#content .area form{padding-top:3.301127214170692%;}
+
+/* 버튼 */
+button[type="button"].btn_style2, .btn_style2{position:absolute;background-repeat:no-repeat;background-position:0 3px;-webkit-background-size:contain;-moz-background-size:contain;-o-background-size:contain;background-size:contain;text-indent:-9999px;}
+button[type="button"].btn_back, a.btn_back, .btn_back{top:50%;margin-top:-10px;left:0;width:20px;height:20px;background-image:url("../images/icon/back.png")}
+button[type="button"].btn_menu, button[type="button"].btn_setup{top:50%;width:20px;-webkit-background-size:contain;-moz-background-size:contain;-o-background-size:contain;background-size:contain}
+button[type="button"].btn_menu{left:0;height:20px;margin-top:-10px;background-image:url("../images/icon/menu.png")}
+button[type="button"].btn_setup{right:0;height:24px;margin-top:-12px;background-image:url("../images/icon/setup.png")}
+button[type="button"].btn_inquery{background-color:#09b6ee}
+button[type="button"].btn_search{width:100%;height:35px;margin-left:10px;background-color:#09b6ee;background-image:url("../images/icon/search.png");background-position:50% 50%;-webkit-background-size:20px 20px;-moz-background-size:20px 20px;-o-background-size:20px 20px;background-size:20px 20px;-webkit-border-radius:50px;-moz-border-radius:50px;border-radius:50px;}
+
+/* 버튼 선택(select) */
+.btn_select{width:100%;border:1px solid #14a6e7;-webkit-border-radius:50px;-moz-border-radius:50px;border-radius:50px;}
+.btn_select button[type="button"]:first-child{-webkit-border-radius:50px 0 0 50px;-moz-border-radius:50px 0 0 50px;border-radius:50px 0 0 50px}
+.btn_select button[type="button"]:nth-child(2){-webkit-border-radius:0 50px 50px 0;-moz-border-radius:0 50px 50px 0;border-radius:0 50px 50px 0}
+.btn_select button[type="button"]{float:left;width:50%;padding:9.5px 0;color:#8e8e8e;background-color:#e3e3e3;}
+.btn_select button[type="button"].on{color:#fff;background-color:#0ab4ed;}
+
+/* 버튼 끄고 켜기(알람) */	
+#content .switch {display:inline-block;position:relative;top:0;left:0;margin-top:0;width:50px;height: 26px;}
+.switch input {display:none;}
+.slider {position:absolute;top:0;left:0;right:0;bottom:0;background-color:#ccc;-webkit-transition:0.4s;transition:0.4s;}
+.slider:before{position: absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background-color:#fff;-webkit-transition:0.4s;transition:0.4s;}
+input:checked + .slider{background-color: #09b6ee;}
+input:focus + .slider{box-shadow:0 0 1px #09b6ee;}
+input:checked + .slider:before{background-image:url("../images/icon/check_on.png");background-repeat:no-repeat;background-position:50% 50%;-webkit-background-size:60% 40%;-moz-background-size:60% 40%;-o-background-size:60% 40%;background-size:60% 40%;-webkit-transform: translateX(24px);-ms-transform: translateX(24px);transform: translateX(24px);}
+.slider.round{-webkit-border-radius:34px;-moz-border-radius:34px;border-radius:34px;}
+.slider.round:before{-webkit-border-radius:50%;-moz-border-radius:50%;border-radius:50%;}
+
+/* input */
+#content{color:#7b7b7b}
+#content form p{position:relative;margin-bottom:3.301476976542137%}
+#content form p.t_p{margin:-3.301476976542137% 0 0 0;padding:1.170411985018727% 0 1.49812734082397% 5.994787141615986%;font-size:0.813em}
+#content input, #content select{width:100%;height:35px;line-height:35px;padding:0 12% 0 5%;border:1px solid #c5c5c5;text-align:right;-webkit-appearance:none;-moz-appearance:none;appearance: none;}
+#content select{direction:rtl}/* 텍스트 오른쪽 정렬 */
+#content input:focus, #content select:focus{border:2px solid #14a6e7}
+#content label{position:absolute;top:50%;margin-top:-8px;left:25px;font-size:0.875em}
+#content .calendar, #content .time{padding-left:20%;font-size:0.9em;color:#7b7b7b;text-align:center}
+#content .calendar{padding-left:23%}
+
+#content .wid:after{display:block;content:"";clear:both}
+#content .wid p, #content .wid div{float:left}
+#content .wid p:last-child, #content .wid div{padding-left:10px}
+#content .wid p.btn_select{padding-left:0}
+#content .wid10{width:10%}
+#content .wid20{width:20%}
+#content .wid30{width:30%}
+#content .wid40{width:40%}
+#content .wid50{width:50%}
+#content .wid60{width:60%}
+#content .wid70{width:70%}
+#content .wid80{width:80%}
+#content .wid90{width:90%}
+
+/* label */
+#content label.label_date, #content label.label_time{margin-top:-10px;background-repeat:no-repeat;-webkit-background-size:contain;-moz-background-size:contain;-o-background-size:contain;background-size:contain;text-indent:-9999px;}
+#content label.label_date{width:20px;left:13px;padding-top:calc(20/63*100%);background-image:url("../images/icon/date.png")}
+#content label.label_time{width:20px;left:20px;padding-top:calc(20/69*100%);background-image:url("../images/icon/time.png")}
+
+/* 메뉴 영역 */
+#gnb, #snb, .over_bg{position:absolute;top:0;}
+#gnb, #snb{display:none;height:100%;overflow-y:auto;overflow-x:hidden;background-color:#fff;z-index:1;}
+#gnb .user_info span, #snb .setup span{margin-top:7px;padding-left:10px;}
+#gnb .close_btn, #snb .close_btn{width:20px;height:20px;margin-top:5px;background-repeat:no-repeat;text-indent:-9999px;background-size:100% 100%}
+#gnb .close_btn{background-image:url("../images/button/close.png")}
+#snb .close_btn{background-image:url("../images/button/close_gray.png")}
+
+#gnb{width:85%;left:-68%;overflow-y:auto;overflow-x:hidden}
+.user_info{width:100%;padding:10px 0;background:#0ab4ed}
+.user_info img{width:30px;height:30px;vertical-align:middle}
+#gnb .user_info span{color:#fff}
+.home a{display:block;height:35px;line-height:35px;padding-left:28px;color:#575757;font-size:0.875em;background:url("../images/icon/home.png") no-repeat 0 50%;-webkit-background-size:20px 20px;-moz-background-size:20px 20px;-o-background-size:20px 20px;background-size:20px 20px}
+
+#gnb .depth1 p{padding:7px 5%;background-color:#ededed;border:1px solid #dbdbdb;border-left:0;border-right:0;color:#575757;font-size:0.875em;}
+#gnb .depth2:after{display:block;content:'';clear:both}
+#gnb .depth2 li{float:left;width:33.333333333%;height:80px;border-right:1px solid #dbdbdb;background-repeat:no-repeat;background-position:50% 32%;background-size:32px}/* depth2 공통 */
+#gnb .depth2 li:nth-child(3){border-right:0}
+#gnb .depth1:last-child{border-bottom:1px solid #dbdbdb;}
+
+#gnb .depth1:first-child li:first-child{background-image:url("../images/icon/bg_bt_mst.png");background-size:20px}/* 혈당 | 측정 */
+#gnb .depth1:first-child li:nth-child(2), #gnb .depth1:nth-child(2) li:nth-child(2), #gnb .depth1:nth-child(3) li:nth-child(2){background-image:url("../images/icon/manual.png")}
+#gnb .depth1:first-child li:nth-child(3), #gnb .depth1:nth-child(2) li:nth-child(3), #gnb .depth1:nth-child(3) li:nth-child(3), #gnb .depth1:nth-child(4) li:first-child, #gnb .depth1:nth-child(5) li:first-child{background-image:url("../images/icon/report.png");background-position:50% 28%;}
+#gnb .depth1:nth-child(2) li:first-child{background-image:url("../images/icon/bp_bt_mst.png");background-size:30px}
+#gnb .depth1:nth-child(3) li:first-child{background-image:url("../images/icon/bmi_bt_mst.png");background-size:25px}
+
+#gnb .depth2 li a{display:flex;align-items:center;justify-content:center;height:28px;padding-top:42px;color:#575757;text-align:center;font-size:0.875em;letter-spacing:-1px}
+
+#snb{width:85%;right:-85%;}
+.setup{width:85%;margin:0 20px;padding:20px 0}
+.setup img{width:20px;height:20px;vertical-align:sub}
+#snb .setup span{display:inline-block;margin-top:7px;padding-left:10px;color:#494e65}
+#snb nav > ul > li > a{display:block;margin-left:42px;padding:15px 0;color:#494e65;font-size:0.875em;background:url("../images/icon/clamp.png") no-repeat 92% 50%;background-size:8px 13px}
+#snb nav > ul > li > a{border-top:1px solid #ccc}
+#snb nav > ul > li:last-child > a, #snb nav > ul > li.last > a{border-bottom:1px solid #ccc}
+
+.over_bg{left:0;width:100%;height:100%;background:url("../images/bg/over64_1x1.png") repeat;}
+
+/* 달력, 시계 */
+.dwb#dw_cancel, .dwb#dw_set{background-image:none;box-shadow:none;text-shadow:none;}
+.dwb#dw_cancel{background-color:#9c9c9c}/* 취소 */
+.dwb#dw_set{background-color:#09b6ee}/* 선택 */
+
+.dw{width:234px}
+
+.mbsc-comp{color:#7b7b7b}/* input color */
+
+/* 사용자등록 */
+.user_inquery #content .area form{padding-top:3.301127214170692%}
+#footer{margin:6% 0 5%}
+#footer p{line-height:20px;padding-bottom:2.4812734082397%;text-align:center;color:#7b7b7b;font-size:0.875em}
+#footer p a{color:#000}
+
+/* 171101 로딩 중 처리 */
+.square{position:absolute;top:50%;left:50%;width:70px;height:70px;padding:0px;margin:-35px 0 0 -35px;border:0;}
+.spin {width:70px;height:70px;border-radius: 50%;border:dashed 5px white;
+  -webkit-animation-name: spin;
+  -webkit-animation-duration: 2s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+}
+
+@-webkit-keyframes spin {
+  from   {  -webkit-transform: rotate(0deg); }
+  to   {  -webkit-transform: rotate(360deg); }
+}
+
+/*========== 최근 측정 정보(메인) ==========*/
+/* 상태 color (공통) */
+.danger .figure, .danger.figure{background-color:#e01e30}
+.warning .figure, .warning.figure{background-color:#f14555}
+.high .figure, .high.figure{background-color:#ff8f29}
+.normal .figure, .normal.figure{background-color:#0ab4ed}
+.low .figure, .low.figure{background-color:#fdc82e}
+.none .figure, .none.figure{background-color:#d2d2d2}
+
+.bg_info .day_info .danger + .f_l p:first-child, .bp_info .day_info .danger p:nth-child(2){color:#e01e30}
+.bg_info .day_info .warning + .f_l p:first-child, .bp_info .day_info .warning p:nth-child(2){color:#f14555}
+.bg_info .day_info .high + .f_l p:first-child, .bp_info .day_info .high p:nth-child(2){color:#ff8f29}
+.bg_info .day_info .normal + .f_l p:first-child, .bp_info .day_info .normal p:nth-child(2){color:#0ab4ed}
+.bg_info .day_info .low + .f_l p:first-child, .bp_info .day_info .low p:nth-child(2){color:#fdc82e}
+
+/* 최근 측정 정보 공통 */
+.main #content{padding-bottom:10px;background-color:#eee}
+.main #content h2.tit{height:40px;line-height:40px;background:#0ab4ed;color:#fff;text-align:center}
+.main #content h2.tit img{width:20px;margin-right:5px;vertical-align:middle}
+.new_info > div{margin-top:10px;border:1px solid #d0d1d9;-webkit-border-radius:5px;-moz-border-radius:5px;-o-border-radius:5px;border-radius:5px}
+.new_info > div > div:nth-child(1){height:30px;line-height:30px;padding:0 5%;background:#d0d1d9;-webkit-border-radius:4px 4px 0 0;-moz-border-radius:4px 4px 0 0;-o-border-radius:4px 4px 0 0;border-radius:4px 4px 0 0}
+.new_info .tit{color:#464854}
+.new_info .now_date{color:#717381;font-size:0.9em}
+.new_info > div > div:nth-child(2){padding:10px 5%;background-color:#fff;-webkit-border-radius:0 0 5px 5px;-moz-border-radius:0 0 5px 5px;-o-border-radius:0 0 5px 5px;border-radius:0 0 5px 5px}
+
+.day_info .figure{width:75px;height:75px;-webkit-border-radius:50%;-moz-border-radius:50%;-o-border-radius:50%;border-radius:50%;color:#fff}
+.day_info .figure p{text-align:center}
+
+.week_info .list li{padding:3% 7px;border-bottom:1px solid #d6d6d6}
+.week_info .list li:first-child{border-top:1px solid #d6d6d6}
+.week_info .list li:after{display:block;content:"";clear:both;}
+.week_info .list li p{text-align:center;font-size:0.75em;}
+.week_info .list li p:first-child{float:left}
+.week_info .list li p:last-child{float:right}
+
+button[type=button].input_btn{position:absolute;right:0;bottom:2.867072111207646%;width:40px;padding-top:calc(10/136*100%);background:url("../images/button/manual_input.png") no-repeat;-webkit-background-size:contain;-moz-background-size:contain;-o-background-size:contain;background-size:contain;text-indent:-9999px}
+
+/* 혈당 - 최근 측정 정보 */
+.bg_info .day_info{background:url("../images/bg/main_bg.jpg") repeat-x 0 50%;-webkit-background-size:1px;-moz-background-size:1px;-o-background-size:1px;background-size:1px;letter-spacing:-1px}
+.bg_info .day_info .clear{margin:0 auto;padding:0 7px;background-color:#fff;} 
+.bg_info .day_info .f_l:first-child{padding-top:10px;}
+.bg_info .day_info .f_l:first-child p:first-child{font-size:2.5em;letter-spacing:-2px;}
+.bg_info .day_info .f_l:first-child p:nth-child(2), .bg_info .day_info .f_l:nth-child(2) p:nth-child(2), .bp_info .day_info .figure p:nth-child(1), .bp_info .day_info .figure p:nth-child(3){font-size:0.8em;letter-spacing:-1px;}
+
+.bg_info .day_info .f_l:nth-child(2){padding:13px 0 13px 10px}
+.bg_info .day_info .f_l:nth-child(2) p:first-child{padding-bottom:2px;font-size:1.7em;letter-spacing:-2px}
+
+.week_info h4{margin:10px 0;color:#555;letter-spacing:-1px}
+.bg_info .week_info > .clear, .bg_info .week_info > .clear .f_l{position:relative;}
+.bg_info .week_info .f_l{width:40%}
+.bg_info .week_info > .clear .f_l > div + div{position:absolute;top:40%;left:0;width:100%}
+.bg_info .week_info > .clear .f_l p{color:#6f6f6f;font-size:0.8em;text-align:center;letter-spacing:-1px;}
+.bg_info .week_info > .clear .f_l p + p{color:#3f464a;font-size:1.5em;text-align:center;letter-spacing:-3px;}
+
+.bg_info .week_info .list{position:absolute;top:50%;right:0;width:60%;-webkit-transform: translateY(-50%);-moz-transform: translateY(-50%);-ms-transform: translateY(-50%);-o-transform: translateY(-50%);transform: translateY(-50%);}
+.bg_info .week_info .list ul{padding-left:10%;background:url("../images/bg/chart1_label.png") no-repeat 5% 50%;-webkit-background-size:7px 80%;-moz-background-size:7px 80%;-o-background-size:7px 80%;background-size:7px 80%}
+.bg_info .week_info .list li p:first-child{width:70%;color:#7b7b7b}
+.bg_info .week_info .list li p:last-child{width:30%;color:#151515}
+
+/* 혈압 - 최근 측정 정보 */
+.bp_info .day_info p:nth-child(1){color:#000;font-size:1.1em;letter-spacing:-1px;}
+.bp_info .day_info p:nth-child(2){padding:3px 0 5px;font-size:2em;letter-spacing:-3px;}
+.bp_info .day_info p:nth-child(2) span{padding-left:4px;font-size:0.5em;letter-spacing:-2px;}
+.bp_info .day_info .figure, .bmi_info .day_info .figure{width:100%;height:35px;line-height:35px;font-size:1.2em;text-align:center;-webkit-border-radius:7px;-moz-border-radius:7px;-o-border-radius:7px;border-radius:7px;}
+    
+.bp_info .week_info .figure{width:7px;height:7px;margin:2% 7px 0 0;-webkit-border-radius:50%;-moz-border-radius:50%;-o-border-radius:50%;border-radius:50%}
+.bp_info .week_info .f_l, .bp_info .week_info .f_r, .bp_info .day_info > div{width:calc( 50% - 5px );text-align:center;}
+.bp_info .week_info h5{padding:3% 0;background-color:#f5f5f5;border-top:1px solid #d6d6d6;text-align:center;font-size:0.8em;}
+.bp_info .week_info .list li p:nth-child(2){float:left;width:calc( 100% - 27px );text-align:left}
+.week_info .list li p:last-child{width:13px;text-align:center;color:#151515}
+
+/* BMI, 활동 - 최근 측정 정보 */
+.bmi_info .day_info p, .act_info .day_info p{-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;}
+.bmi_info .day_info p:not(:last-child), .act_info .day_info p:not(:last-child){background:url("../images/bg/line_1x1.jpg") no-repeat 100% 0;-webkit-background-size:1px 36px;-moz-background-size:1px 36px;-o-background-size:1px 36px;background-size:1px 36px}
+.bmi_info .day_info p strong span, .act_info .day_info p strong span{font-size:0.8em;letter-spacing:-1px;}
+
+/* BMI - 최근 측정 정보 */
+.bmi_info .day_info div.figure + div{width:100%;margin-top:10px}
+.bmi_info .day_info p:nth-child(1){width:67px;padding-right:calc((100% - 200px)/4)}
+.bmi_info .day_info p:nth-child(2){width:55px;padding:0 calc((100% - 200px)/4)}
+.bmi_info .day_info p:nth-child(3){width:78px;padding-left:calc((100% - 200px)/4)}
+
+/* 활동 - 최근 측정 정보 */
+.act_info .day_info p:nth-child(1){width:61px;padding-right:calc((100% - 215px)/4)}
+.act_info .day_info p:nth-child(2){width:78px;padding:0 calc((100% - 215px)/4)}
+.act_info .day_info p:nth-child(3){width:76px;padding-left:calc((100% - 215px)/4)}
+
+/*==========---------- 서브 페이지 공통 ----------==========*/
+.bl_bg{width:100%;margin-top:-14%;background-color:#0ab4ed;z-index:-1}
+
+.tab_btn li a{float:left;width:50%;/*height:8.454106280193237%;*/line-height:1;margin:2.334943639291465% 0;padding:7px 0;border:1px solid #fff;border-left:0;background-color:#0ab4ed;font-size:0.875em;text-align:center;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box}
+.tab_btn li:first-child a{border-left:1px solid #fff;-webkit-border-radius:10px 0 0 10px;-moz-border-radius:10px 0 0 10px;-o-border-radius:10px 0 0 10px;border-radius:10px 0 0 10px}
+.tab_btn li:last-child a{-webkit-border-radius:0 10px 10px 0;-moz-border-radius:0 10px 10px 0;-o-border-radius:0 10px 10px 0;border-radius:0 10px 10px 0}
+.tab_btn li.on > a{color:#0ab4ed;background-color:#fff}/* , .tab_btn li > a:focus */
+.bg_report .tab_btn li a{font-size:1em}
+
+.main .tab_cnt .cnt1{margin-top:-1px;background:url("../images/bg/bl_bg_1x1.jpg") no-repeat 50% 0;-webkit-background-size:100% 14%;-moz-background-size:100% 14%;-o-background-size:100% 14%;background-size:100% 14%}
+.tab_cnt .cnt2, .tab_cnt .cnt3{display:none;} 
+
+.week_info .tit, .date_cnt .tit, .health_management #content .tit, .bg_report #content .tit, #tab2 .tab_cnt .cnt1 .tit, .timeline .tit, #timeline .tit, .act_timeline .tit{padding:10px 0 10px 10px;margin-top:3%;border-top:1px solid #d6d6d6;border-bottom:1px solid #d6d6d6;background-color:#f5f5f5;color:#707070;font-size:0.875em;}
+
+.tab_btn_bg{background-color:#0ab4ed}
+#tab2 .tab_cnt{padding-top:10px}
+#tab2 .tab_cnt div{display:block}
+
+/* === 수동입력 === */
+.bh_manual_input .figure_input, .pre_mst .figure_input, .bmi_mst .figure_input{margin:15px 0 23px;border:2px solid #ededed;background-color:#fff;-webkit-border-radius:13px;-moz-border-radius:13px;-o-border-radius:13px;border-radius:13px}
+.bh_manual_input .bg, .pre_mst .bg, .bmi_mst .bg{width:95%;margin:2% auto;padding:13px 0 13px 8%;background-color:#ededed;-webkit-border-radius:7px;-moz-border-radius:7px;-o-border-radius:7px;border-radius:7px}
+.bh_manual_input .bg > div div, .pre_mst .bg > div div, .bmi_mst .bg > div div{line-height:35px;margin-bottom:8px}
+.bh_manual_input .bg > div div:last-child, .pre_mst .bg > div div:last-child, .bmi_mst .bg > div div:last-child{margin-bottom:0}
+.bh_manual_input .bg > div div:after, .pre_mst .bg > div div:after, .bmi_mst .bg > div div:after{display:block;content:'';clear:both}
+#content .figure_input p{float:left;margin-bottom:0;letter-spacing:-1px}
+#content .figure_input p:nth-child(1){width:73px;font-size:0.9em}
+#content .figure_input p:nth-child(2){width:calc(100% - 170px);margin:0 13px 0 18px}
+#content .figure_input input{height:38px;line-height:38px;padding:0;border:none;font-size:2em;text-align:center;color:#000;letter-spacing:-1px;}
+#content .figure_input input.readonly{background-color:#ededed}
+#content .figure_input p:nth-child(3){font-size:0.8em}
+
+/* === 타임라인 === */
+.timeline .tit a{color:#707070}
+.timeline ul li, .act_timeline ul li{margin:15px 0;padding-bottom:15px;border-bottom:1px solid #d6d6d6;font-size:0.9em;color:#7b7b7b}
+.timeline ul > li:last-child, .act_timeline ul > li:last-child{padding-bottom:0;border-bottom:0}
+.timeline ul:last-child li:last-child{margin-bottom:0;padding-bottom:15px;border-bottom:1px solid #d6d6d6;}
+.timeline ul li div:after, .timeline ul li p div:after, .act_timeline ul li div:after{display:block;content:'';clear:both}
+.timeline ul li p, .timeline ul li p strong, .act_timeline ul li p, .bmi_info .day_info p, .act_info .day_info p{float:left;display:block;letter-spacing:-1px;color:#7b7b7b}
+.timeline ul li p{width:25%;margin-right:2%;padding-right:2%}
+.timeline ul li p:nth-child(2){width:26%}
+.timeline ul li p:nth-child(3){width:28%}
+.timeline ul li p:first-child, .timeline ul li p:nth-child(2), .timeline ul li p:nth-child(3), .act_timeline ul li p:first-child, .act_timeline ul li p:nth-child(2){background:url("../images/bg/line_1x1.jpg") no-repeat 100% 0;-webkit-background-size:1px 23px;-moz-background-size:1px 23px;-o-background-size:1px 23px;background-size:1px 23px}
+.timeline .figure{width:40px;margin:0 2px 0 auto;text-align:center;color:#fff;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;}
+.timeline ul li p strong:first-child{height:23px;line-height:23px}
+.timeline ul li p:not(.alarm) strong:first-child, .act_timeline ul li p strong strong, .bmi_info .day_info p strong strong, .act_info .day_info p strong strong{margin-right:4px;font-size:1.4em;font-weight:bold;text-align:center}
+.timeline ul li p:nth-child(3) strong:first-child{width:32px;margin-right:4px;}
+.timeline ul li p strong span, .act_timeline ul li p > span, .bmi_info .day_info p > span, .act_info .day_info p > span{width:100%;display:block;font-size:0.9em}
+.timeline ul li p.alarm, .act_timeline ul li p.alarm{width:3%;padding-left:18px;margin-right:0;font-size:1.05em;background:url("../images/icon/alarm.png") no-repeat 0 50%;-webkit-background-size:15px;-moz-background-size:15px;-o-background-size:15px;background-size:15px}
+.timeline ul li p.alarm strong, .act_timeline ul li p.alarm strong{line-height:23px;letter-spacing:-1px}
+
+/* === 트렌드 === */
+.pre_trend #tab3 .tab_btn li a, .bmi_trend #tab3 .tab_btn li a{width:25%}
+.pre_trend #tab3 .tab_btn li:first-child a, .bmi_trend #tab3 .tab_btn li:first-child a{-webkit-border-radius:20px 0 0 20px;-moz-border-radius:20px 0 0 20px;border-radius:20px 0 0 20px;}
+.pre_trend #tab3 .tab_btn li:last-child a, .bmi_trend #tab3 .tab_btn li:last-child a{-webkit-border-radius:0 20px 20px 0;-moz-border-radius:0 20px 20px 0;border-radius:0 20px 20px 0;}
+.pre_trend #tab2 #tab3 .tit, .bmi_trend #tab2 #tab3 .tit, .act_trend #tab2 #tab3 .tit{margin-top:0}
+
+/*========== 혈당 ==========*/
+/* 혈당 | 수동입력 */
+.bh_manual_input #content #inputForm{padding-top:0}
+.manual_input{position:relative;width:50%;margin:25px auto;padding-top:calc(343/686*100%);background:url("../images/bg/bh_manual_input.png") no-repeat 50% 50%;-webkit-background-size:contain;-moz-background-size:contain;-o-background-size:contain;background-size:contain;text-align:center}
+.manual_input > div{position:absolute;top:24.5%;left:15%;width:70%;color:#7b7b7b}
+.manual_input p:first-child{font-size:4vw}
+input::-moz-input-placeholder{color:#000}/* input placeholder color */
+input::-webkit-input-placeholder{color:#000}/* input placeholder color */
+#content .manual_input p:nth-child(3){height:20px;margin-bottom:0;font-size:3vw}
+
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{margin:0;-webkit-appearance:none;-moz-appearance:none;appearance:none}
+input[type=number]{-moz-appearance:textfield;}
+#content .manual_input input{display:block;float:left;height:inherit;margin:7% 0;padding:0;text-align:center;font-size:10vw;border:none;-webkit-border-radius:50px;-moz-border-radius:50px;border-radius:50px;}
+#content .manual_input input:focus {outline:0;}
+
+/* 혈당 | 리포트 | 타임라인 */
+.date_search > div, .date_search > button[type="button"], .date_cnt .figure, .date_cnt .state, #content .date_cnt .state div, #content .date_cnt .time{float:left;}
+.date_search > div:first-child{width:82%}
+.date_search > div:last-child{position:relative;width:15%}
+#content .date_search p{margin-bottom:0}
+.date_search p:first-child, .date_search p:last-child{position:relative;width:46%}
+#content .date_search p input, .date_search p select{padding-left:27%}
+.date_search p:nth-child(2){width:8%;padding-top:9.5px;text-align:center}
+.date_search p:first-child, .date_search p:nth-child(2){float:left;}
+.date_search p:last-child{float:right;}
+#content .date_search label.label_date{left:12px}
+.date_select{padding-top:10px}
+.date_select button[type="button"]{width:80px;margin-right:20px;padding:0 0 1px 3px;color:#8e8e8e;font-size:0.9em;text-align:left;background-image:url(../images/icon/select_arrow_gray.png);background-repeat:no-repeat;background-position:65px 50%;-webkit-background-size:9px 6px;-moz-background-size:9px 6px;-o-background-size:9px 6px;background-size:9px 6px;border-bottom:1px solid #8e8e8e;}
+.date_select button[type="button"].down{background-image:url(../images/icon/select_arrow_gray_up.png);}
+.date_select button[type="button"].on{color:#0ab4ed}
+.date_cnt{background:url("../images/bg/timeline_bg.png") repeat-y;-webkit-background-size:10px 17px;-moz-background-size:10px 17px;-o-background-size:10px 17px;background-size:10px 17px;background-position:28px 0}
+.date_cnt div .tit{margin-top:10px;padding:7px 0 7px 5%}
+.date_cnt div:nth-child(2) .tit{margin-top:0}	
+.date_cnt ul li a{display:block;width:100%;height:60px}
+.date_cnt ul li:first-child{margin-top:3%}
+.date_cnt ul li{margin-bottom:3%;padding-left:2px}
+.date_cnt ul li:after{display:block;content:"";clear:both}
+.date_cnt ul li .state{padding-left:15px;margin-top:18px}
+.date_cnt .figure{position:relative;width:60px;height:60px;margin:0px auto;text-align:center;color:#fff;-webkit-border-radius:50%;-moz-border-radius:50%;border-radius:50%;}
+.date_cnt .figure.danger{background-color:#f14555}
+.date_cnt .figure.normal{background-color:#09b6ee}
+.date_cnt .figure.warning{background-color:#ff8f29}
+.date_cnt .figure.low{background-color:#fdc82e}
+.date_cnt .figure.none{background-color:#d2d2d2}
+.date_cnt .figure > div{position:absolute;top:20%;width:100%}
+.date_cnt .figure p:first-child{font-size:1.5em}
+.date_cnt .figure p:nth-child(2){font-size:0.7em}
+#content .state p{font-size:0.875em;color:#7b7b7b;background-color:#efefef;-webkit-border-radius:50px;-moz-border-radius:50px;border-radius:50px;}
+#content .state div{width:65%;padding-right:10px}
+#content .date_cnt .point{width:100%;padding:5px 0 5px 15px;text-align:left}
+#content .date_cnt .time{width:35%;padding:5px 0;text-align:center}
+
+/* 혈당 | 리포트 | 트랜드 */
+#tab3 .tab_btn li a{display:block;width:33.33333333333%;padding:10px 0;color:#8e8e8e;background-color:#e3e3e3;border:1px solid #0ab4ed;border-left:0;}
+#tab3 .tab_btn li:first-child a{border-left:1px solid #0ab4ed;-webkit-border-radius:10px 0 0 10px;-moz-border-radius:10px 0 0 10px;border-radius:10px 0 0 10px;}
+#tab3 .tab_btn li:last-child a{-webkit-border-radius:0 10px 10px 0;-moz-border-radius:0 10px 10px 0;border-radius:0 10px 10px 0;}
+#tab3 .tab_btn li.on > a, #tab3 .tab_btn li > a:focus{color:#fff;background-color:#0ab4ed}
+
+#tab3 .tab_cnt{padding-top:0}
+#tab3 .tab_cnt select{width:65px;padding:0 0 5px 3px;direction:ltr;background-image:url("../images/icon/select_arrow_gray.png");background-position:52px 50%;border:none;border-bottom:1px solid #8e8e8e;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;color:#8e8e8e}
+#tab3 .tab_cnt .cnt2, #tab3 .tab_cnt .cnt3, #tab3 .tab_cnt .cnt4{display:none}
+
+/* 혈당 | 리포트 | 예후진단  */
+.bg_report #content{font-size:0.875em}
+.bg_report #content .tab_cnt > div:nth-child(2) .tit{margin-top:10px} 
+.bg_report #content .tit{margin-top:0;font-size:1em}
+.bg_report #content .tit + div{margin-top:3%}
+.bg_report h4{padding:0 0 5px 15px;line-height:1.4;background:url("../images/icon/blue_dot.png") no-repeat 0 6px;-webkit-background-size:7px 7px;-moz-background-size:7px 7px;-o-background-size:7px 7px;background-size:7px 7px;color:#0ab4ed}
+.bg_report h4 span,.bg_report .clear h4 + span{color:#7b7b7b;line-height:1.4;}
+.bg_report #content .tab_cnt > div:last-child > div div{width:100%;margin:30px auto 20px;text-align:center}
+.bg_report #content .tab_cnt > div:last-child img{width:60%}
+
+/*========== 혈압 ==========*/
+/* 혈압 | 수동입력 */
+/* 혈압 | 리포트 | 타임라인 */
+/*========== BMI ==========*/
+/* BMI | 수동입력 */
+.bmi_mst #content .figure_input p:nth-child(1){width:87px;}
+.bmi_mst #content .figure_input p:nth-child(2){margin:0 13px 0 15px}
+/* BMI | 리포트 | 타임라인 */
+.bmi_time .timeline .area{width:93%}
+.bmi_time .timeline ul li p:first-child{width:auto;margin-right:2%;padding-right:0;background:none}
+.bmi_time .timeline ul li p:nth-child(2){width:24%}
+.bmi_time .timeline ul li p:nth-child(3){width:26%}
+.bmi_time .timeline ul li p:nth-child(4){width:23%}
+.bmi_time .timeline ul li p:first-child strong{margin-right:0;font-size:1em}
+.bmi_time .timeline ul li p:nth-child(2) strong:first-child, .bmi_time .timeline ul li p:nth-child(3) strong:first-child, .bmi_time .timeline ul li p:nth-child(4) strong:first-child{width:39px}
+.bmi_time .figure{float:left;width:23px;height:23px;line-height:23px;-webkit-border-radius:23px;-moz-border-radius:23px;border-radius:23px}
+/*========== 활동 ==========*/
+/* 활동 | 리포트 | 타임라인 */
+.act_timeline ul li p:first-child, .act_timeline ul li p:nth-child(2), .act_timeline ul li p:nth-child(3){width:calc((90% - 38px)/3)}
+.act_timeline ul li p:first-child, .act_timeline ul li p:nth-child(2){-webkit-background-size:1px 32px;-moz-background-size:1px 32px;-o-background-size:1px 32px;background-size:1px 32px}
+.act_timeline ul li p:first-child strong strong{width:36.5px}
+.act_timeline ul li p:nth-child(2) strong strong, .act_timeline ul li p:nth-child(2) strong strong{width:47px}
+.act_timeline ul li p.alarm strong{line-height:32px}
+ .act_timeline ul li p.alarm{float:right;width:49px;padding-right:10%}
+/*========== 종합분석 ==========*/
+/* 종합분석 | 종합분석 */
+
+/*========== 설정 ==========*/
+/* 건강정보 */
+.health_view #content form > div:first-child div{padding-left:0}
+.health_view #content form .wid{margin-bottom:3.301476976542137%}
+.health_view #content form p{margin-bottom:0}
+
+/* 목표설정 */
+.goal_set_bg .tab_btn li a, .goal_set_bp .tab_btn li a, .goal_set_bmi .tab_btn li a{width:33.3333333333%}
+.goal_cnt, .goal_img{border:1px solid #d6d6d6;-webkit-border-radius:7px;-moz-border-radius:7px;-o-border-radius:7px;border-radius:7px}
+.goal_cnt{padding:10px 0;margin-bottom:10px;}
+.goal_set_bg .goal_cnt div, .goal_set_bp .goal_cnt div, .goal_set_bmi .goal_cnt div div, .goal_set_bmi .goal_cnt div:nth-child(2){width:90%;height:35px;line-height:35px;margin:0 auto}
+body:not(.goal_set_bmi) .goal_cnt div:not(:last-child){margin-bottom:10px}
+.goal_cnt span{display:inline-block;font-size:0.9em;letter-spacing:-1px}
+.goal_cnt span:first-child{width:100px;}
+.goal_cnt span:last-child{padding-left:3px}
+#content .goal_cnt input{width:calc((100% - 177px)/2);margin:0 4px;padding:0;text-align:center;color:#000;border:1px solid #8f8f8f}
+#content .goal_cnt input:first-child{margin-right:4px}
+
+.goal_set_bp #content .goal_cnt input{width:calc((100% - 182px)/2);}
+
+.goal_set_bmi .goal_cnt div div, .goal_set_bmi .goal_cnt div:nth-child(2){width:80%;margin:0 auto}
+.goal_set_bmi .goal_cnt span:first-child{width:50px}
+
+.goal_set_bmi #content .goal_cnt input{width:calc(100% - 110px)}
+.goal_set_bmi .goal_cnt input.readonly{background:#ececec;}
+.goal_set_bmi .goal_cnt > div:first-child{padding-bottom:10px;border-bottom:1px solid #d6d6d6}
+
+.goal_img{margin-top:10px}
+.goal_img .tit{height:30px;line-height:30px;padding-left:5%;color:#707070;font-size:0.9em;background:#e6e6e6;border-bottom:1px solid #c4c4c4;-webkit-border-radius:7px 7px 0 0;-moz-border-radius:7px 7px 0 0;-o-border-radius:7px 7px 0 0;border-radius:7px 7px 0 0}
+.goal_img div{padding:7%;background:#f5f5f5;-webkit-border-radius:0 0 7px 7px;-moz-border-radius:0 0 7px 7px;-o-border-radius:0 0 7px 7px;border-radius:0 0 7px 7px;}
+.goal_img img{width:100%}
+
+/* 언어설정 */
+.language_mst #content > div > div{padding:15px 0;border-bottom:1px solid #d6d6d6}
+.language_mst #footer{margin-top:20px}
+
+/* 개인정보취급방침 */
+.privacy_statement{color:#7b7b7b}
+.privacy_statement #content .area{padding-bottom:20px}
+.privacy_statement h4{padding:20px 0 10px 0;line-height:1.4}
+.privacy_statement #content div{padding-bottom:10px}
+.privacy_statement p{line-height:1.4}
+
+/* 버전정보 */
+.version #content .area{margin:5% auto;font-size:0.875em}
+.version #content .f_l, .version .f_r{padding:3% 0;}
+.version #content .f_l, .version  #content .f_l img{width:60%}
+.version #content .f_l{text-align:center}
+.version .f_l #content img{margin:0px auto;}
+.version .f_r{width:40%;font-size:3vw}
+.version .f_r p:first-child{padding-bottom:3%}
+.version .f_r p:last-child{padding-top:3%}
+.version #footer{margin:6% 0 0 0}
+
+/* --- 180326 모바일 기기에 따른 제어 --- */
+@media all and (min-width:768px){
+	/* .timeline .figure{width:70%} */
+	.timeline ul li > p:first-child strong:last-child, .timeline ul li > p:nth-child(2) strong:last-child{width:30%}
+	.timeline ul li p:first-child, .timeline ul li p:nth-child(2){background-position:94% 0}
+}
+
+/* --- 180326 ios 타임라인 ---*/
+.m_ios .timeline .figure.warning, .m_ios .timeline ul li p:not(.alarm) strong:first-child, .m_ios .bmi_time .figure{line-height:26px}
+
+.m_ios .bg_info .day_info .f_l:first-child p:first-child{padding:4px 0 0 2px}
+.m_ios .bg_info .day_info .f_l:first-child p:nth-child(2){margin-top:-4px}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="bloodPressureTimeView">
+
+	<!-- 타임라인목록 조회 -->
+	<select id="selectBpTimeLinelList" resultClass="retail.bloodPressureTimeView.service.BloodPressureTimeViewVO" parameterClass="java.util.HashMap" >
+		<![CDATA[
+			SELECT 
+			    ROWNUM
+			    ,MEASURE_SEQ
+			    ,SUBSTR(MEASURE_DT,0,4) ||'-'||SUBSTR(MEASURE_DT,5,2)||'-'||SUBSTR(MEASURE_DT,7,2) AS MEASURE_DT
+    			,NVL(DECODE(MEASURE_TIME, NULL, NULL, SUBSTR(MEASURE_TIME,0,2) ||':'||SUBSTR(MEASURE_TIME,3,2)),'-') AS MEASURE_TIME
+			    ,CRYPTO_AES256.DEC_AES(SYSTOLE_MEASURE_VALUE) AS SYSTOLE_MEASURE_VALUE
+			    ,CRYPTO_AES256.DEC_AES(DIASTOLE_MEASURE_VALUE) AS DIASTOLE_MEASURE_VALUE
+			    ,CRYPTO_AES256.DEC_AES(HEART_RATE_MEASURE_VALUE) AS HEART_RATE_MEASURE_VALUE
+			    ,SYSTOLE_BP_STATE
+			    ,DIASTOLE_BP_STATE
+			FROM 
+			    TBL_BP_MEASURE_INFO 
+			WHERE 
+			    PATIENT_CD=#PATIENT_CD#
+			    AND MEASURE_DT BETWEEN #MEASURE_DT_FROM# AND #MEASURE_DT_TO#
+			    AND DEL_YN='N'
+			ORDER BY  
+			    $SORT$
+			    ,ROWNUM ASC
+			    ,MEASURE_TIME ASC
+			]]>
+	</select>
+	
+	
+</sqlMap>

@@ -1,0 +1,46 @@
+<%@ page language="java"   contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@page import="retail.common.BaseEnv" %>
+<%@page import="retail.common.CommonUtil" %>
+<%@page import="retail.common.SessionModel" %>
+<%@page import ="java.util.List" %>
+<%@page import ="java.util.HashMap" %>
+<%@page import ="java.util.ArrayList" %>
+<%@page import ="java.util.List" %>
+<%@page import ="retail.main.service.MainVO" %>
+<!-- <script type="text/javascript" src="/resources/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/resources/js/comm.js"></script>
+<script type="text/javascript" src="/resources/js/datetime.js"></script>
+<link rel="stylesheet" href="/resources/css/mobiscroll-1.6.min.css" /> 
+<script type="text/javascript" src="/resources/js/mobiscroll-1.6.js" ></script> -->
+<script type="text/javascript">
+ 	$(document).ready(function () {
+		
+	});
+</script>
+<body>
+		<!-- 오른쪽 메뉴 시작 -->
+		<div id="snb">
+			<div class="setup clear">
+				<p class="f_l"><img src="/resources/images/icon/setup_tit.png"><span><spring:message code="settings"/><!-- 설정 --></span></p>
+				<button type="button" class="close_btn f_r" onClick="closeBtn2()">메뉴 영역 닫기</button>
+			</div>	
+			<nav>
+				<ul>
+					<li><a href="#" onClick="userInfoMst()"><span><spring:message code="userProfile"/><!-- 사용자 정보--></a></li>
+					<li><a href="#" onClick="healthView()"><span><spring:message code="physicalInformation"/><!-- 건강 정보--></a></li>
+					<li><a href="#" onClick="goalSetting()"><span><spring:message code="goalSetting"/><!-- 목표 설정--></a></li>
+					<li><a href="#" onclick="goSetting()"><span><spring:message code="devices"/><!-- 측정기 연결--></a></li>
+					<li><a href="#" onclick="goAlarm()"><span><spring:message code="alarm"/><!-- 알람--></a></li>
+					<li><a href="#" onClick="languageMst()"><span><spring:message code="language"/><!-- 언어--></a></li>
+					<li><a href="#" onClick="privacyStatement()"><span><spring:message code="privacyStatement"/><!-- 이용약관 및 개인정보취급방침--></a></li>
+					<li><a href="#" onClick="goVersion()"><span><spring:message code="version"/><!-- 버전--></a></li>
+					<li><a href="#" onClick="howToUse()"><span><spring:message code="howToUse"/><!-- 사용방법--></a></li>
+					<li><a href="#" onClick="goPassChange()"><span><spring:message code="changePassword"/><!-- 비밀번호 변경--></a></li>
+					<li class="last"><a href="#" onClick="logOut()"><span><spring:message code="logout"/><!-- 로그아웃 --></a></li>
+				</ul>
+			</nav>
+		</div>
+		<!-- 오른쪽 메뉴 끝 -->
+</body>

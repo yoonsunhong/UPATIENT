@@ -1,0 +1,45 @@
+#\uacf5\ud1b5 \uba54\uc138\uc9c0
+msgSaveConfirm=Do you want to save it?
+msgSave=Saved.
+msgModifyConfirm=Do you want to edit it?
+msgModify=It is changed.
+msgDeleteConfirm=Are you sure you want to delete?
+msgDelete=Removed.
+
+#\uacf5\ud1b5 \ubc84\ud2bc
+btnNew=Create
+btnSave=Save
+btnDel=Delete
+btnSearch=Search
+
+#\uadf8\ub9ac\ub4dc TEXT
+korean=Korean
+english=English
+czechia=Czechia
+langSetting=Language setting
+customerCode=Customer code
+passWord=Password
+autoLogin=Auto-Login
+settingLang=Language setting
+login=Login
+findPass=Find password
+signUp=Sign Up
+maximum=Maximum
+minimum=Minimum
+average=Average
+totalMeasured=Total measured
+veryHighs=Very highs
+highs=Highs
+normal=Normal
+nows=Lows
+
+#\uba54\uc138\uc9c0 (\uc7a5\ubb38)
+msgLogin1=Forgot your password?
+msgLogin2=Are you new?
+msgLogin3=Please enter your ID.
+msgLogin4=Please enter your password.
+msgLogin5=Please check your ID password.
+
+#\uba54\uc778\ud654\uba74 TEXT
+msgMain1=Recent measurement information
+msgMain2=Last 7 days information

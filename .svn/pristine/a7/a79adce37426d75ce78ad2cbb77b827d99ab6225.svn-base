@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="contents">
+
+	<!-- 의료기기 사용자 등록 -->
+	<update id="insertMeasureDeviceInfo" parameterClass="java.util.HashMap" >
+			INSERT INTO TBL_MEASURE_DEVICE_INFO (   
+			            MEASURE_DEVICE_ESNTL_NO
+			,           PATIENT_CD
+			,           DISEASE_CD
+			,           MEASURE_DEVICE_CD
+			,           DEL_YN
+			,           REG_DTTM
+			) 
+			VALUES ( 
+			            #MEASURE_DEVICE_ESNTL_NO#
+			,           #PATIENT_CD# 
+			,           #DISEASE_CD#
+			,           #MEASURE_DEVICE_CD#
+			,           'N'
+			,           SYSDATE
+			)
+	</update>
+	
+	<!-- 블루투스 연동 혈당측정 정보 등록 -->
+	<update id="insertBtBloodGlucose" parameterClass="java.util.HashMap">
+		INSERT INTO TBL_BS_MEASURE_INFO
+		(
+		    MEASURE_SEQ
+		    ,PATIENT_CD
+		    ,DISEASE_CD
+		    ,BS_MEASURE_VALUE
+		    ,BS_MEASURE_UNIT
+		    ,BS_MEASURE_DT
+		    ,BS_MEASURE_TIME
+		    ,BS_MEASURE_POINT
+		    ,WEIGHT
+		    ,WEIGHT_UNIT
+		    ,DEL_YN
+		    ,REG_DTTM    
+		)
+		VALUES
+		(
+		     BS_MEASURE_SEQ.NEXTVAL
+		    ,#PATIENT_CD#
+		    ,#DISEASE_CD#
+		    ,#BS_MEASURE_VALUE#
+		    ,#BS_MEASURE_UNIT#
+		    ,#BS_MEASURE_DT#
+		    ,#BS_MEASURE_TIME#
+		    ,#BS_MEASURE_POINT#
+		    ,#WEIGHT#
+		    ,#WEIGHT_UNIT#
+		    ,'N'
+		    ,SYSDATE
+		)
+	</update>
+	
+	<!-- 건강정보 조회 -->
+	<select id="selectHealthInfo" parameterClass="java.util.HashMap" resultClass="retail.contents.service.ContentsVO" >
+		SELECT 
+			SEX
+			,CRYPTO_AES256.DEC_AES(HEIGHT) AS HEIGHT
+			,CRYPTO_AES256.DEC_AES(WEIGHT) AS WEIGHT
+		FROM 
+		    TBL_USER_INFO
+		WHERE PATIENT_CD=#PATIENT_CD#
+	</select>
+	
+	<!-- 건강정보 업데이트 -->
+	<update id="updateHealthInfo" parameterClass="java.util.HashMap">
+		UPDATE TBL_USER_INFO SET
+			SEX = #SEX#
+			,HEIGHT = CRYPTO_AES256.ENC_AES(#HEIGHT#)
+			,WEIGHT = CRYPTO_AES256.ENC_AES(#WEIGHT#)
+		WHERE PATIENT_CD = #PATIENT_CD#
+	</update>
+	
+	
+	<!-- 관리항목 조회 -->
+	<select id="selectHealthMgtInfo" resultClass="retail.contents.service.ContentsVO" parameterClass="java.util.HashMap" >
+		<![CDATA[
+		SELECT
+		    D.DISEASE_0001,
+		    D.DISEASE_0002,
+		    D.DISEASE_0003,
+		    A.FASTING_VALUE_1,
+		    A.FASTING_VALUE_2,
+		    A.FASTING_VALUE_3,
+		    A.AFTER_MEAL_VALUE_1,
+		    A.AFTER_MEAL_VALUE_2,
+		    A.AFTER_MEAL_VALUE_3,
+		    B.SYSTOLE_FROM,
+		    B.SYSTOLE_TO,
+		    B.DIASTOLE_FROM,
+		    B.DIASTOLE_TO,  
+		    B.HEART_RATE_FROM,
+		    B.HEART_RATE_TO,
+		    C.WEIGHT_FROM,
+		    C.WEIGHT_TO,
+		    C.MUSCLE_QY_FROM,
+		    C.MUSCLE_QY_TO,
+		    C.FAT_QY_FROM,
+		    C.FAT_QY_TO
+		FROM 
+		        TBL_BS_MGMT_INFO A, TBL_BP_MGMT_INFO B, TBL_BMI_MGMT_INFO C, 
+		        (
+		            SELECT
+		                PATIENT_CD,
+		                MAX(DECODE(DISEASE_CD,'0001',MGMT_YN)) AS DISEASE_0001,
+		                MAX(DECODE(DISEASE_CD,'0002',MGMT_YN)) AS DISEASE_0002,
+		                MAX(DECODE(DISEASE_CD,'0003',MGMT_YN)) AS DISEASE_0003
+		            FROM 
+		                TBL_MGMT_DISEASE_INFO
+		            WHERE 
+		                PATIENT_CD = #PATIENT_CD#
+		            GROUP BY   PATIENT_CD  
+		        ) D
+		WHERE 
+		    A.PATIENT_CD = #PATIENT_CD#
+		    AND A.PATIENT_CD = B.PATIENT_CD    
+		    AND A.PATIENT_CD = C.PATIENT_CD
+		    AND A.PATIENT_CD = D.PATIENT_CD
+		]]>
+	</select>
+	
+	<!-- 관리항목 업데이트 -->
+	<update id="updateHealthMgtInfo" parameterClass="java.util.HashMap">
+		DECLARE BEGIN
+			
+			UPDATE TBL_MGMT_DISEASE_INFO SET
+			    MGMT_YN = #BS_CHECK#
+			WHERE
+			     PATIENT_CD = #PATIENT_CD# 
+			     AND DISEASE_CD = '0001';
+			
+			UPDATE TBL_MGMT_DISEASE_INFO SET
+			    MGMT_YN = #BP_CHECK#
+			WHERE 
+			    PATIENT_CD = #PATIENT_CD# 
+			    AND DISEASE_CD='0002';
+			
+			UPDATE TBL_MGMT_DISEASE_INFO SET
+			    MGMT_YN = #BMI_CHECK#
+			WHERE 
+			    PATIENT_CD = #PATIENT_CD# 
+			    AND DISEASE_CD='0003';
+			
+			
+			UPDATE TBL_BS_MGMT_INFO SET
+			    FASTING_VALUE_1 = #FASTING_VALUE_1#,
+			    FASTING_VALUE_2 = #FASTING_VALUE_2#,
+			    FASTING_VALUE_3 = #FASTING_VALUE_3#,
+			    AFTER_MEAL_VALUE_1 = #AFTER_MEAL_VALUE_1#,
+			    AFTER_MEAL_VALUE_2 = #AFTER_MEAL_VALUE_2#,
+			    AFTER_MEAL_VALUE_3 = #AFTER_MEAL_VALUE_3#
+			WHERE 
+			    PATIENT_CD = #PATIENT_CD#  
+			    AND DISEASE_CD='0001';   
+			
+			UPDATE TBL_BP_MGMT_INFO SET
+			    SYSTOLE_FROM = #SYSTOLE_FROM#,
+			    SYSTOLE_TO = #SYSTOLE_TO#,
+			    DIASTOLE_FROM = #DIASTOLE_FROM#,
+			    DIASTOLE_TO = #DIASTOLE_TO#,
+			    HEART_RATE_FROM = #HEART_RATE_FROM#,
+			    HEART_RATE_TO = #HEART_RATE_TO#
+			WHERE 
+			    PATIENT_CD = #PATIENT_CD#  
+			    AND DISEASE_CD='0002';
+			
+			UPDATE TBL_BMI_MGMT_INFO SET
+			    WEIGHT_FROM = #WEIGHT_FROM#,
+			    WEIGHT_TO = #WEIGHT_TO#,
+			    MUSCLE_QY_FROM = #MUSCLE_QY_FROM#,
+			    MUSCLE_QY_TO = #MUSCLE_QY_TO#,
+			    FAT_QY_FROM = #FAT_QY_FROM#,
+			    FAT_QY_TO = #FAT_QY_TO#
+			WHERE 
+			    PATIENT_CD = #PATIENT_CD#  
+			    AND DISEASE_CD='0003';    
+		
+		END;		    
+	</update>
+	
+	<!-- 사용자정보 조회 -->
+	<select id="selectMyInfo" parameterClass="java.util.HashMap" resultClass="retail.contents.service.ContentsVO" >
+		SELECT 
+		    A.USER_NM
+		    ,B.HSPTL_NM
+		    ,A.PATIENT_CD
+		    ,SUBSTR(A.BRTHDY,0,4)||'-'||SUBSTR(A.BRTHDY,5,2)||'-'||SUBSTR(A.BRTHDY,7,2) AS BRTHDY    
+		    ,A.EMAIL
+		    ,CRYPTO_AES256.DEC_AES(A.TEL_NO) AS TEL_NO
+		FROM 
+		    TBL_USER_INFO A, TBL_HSPTL_MST B
+		WHERE 
+		    A.HSPTL_CD = B.HSPTL_CD 
+		    AND A.PATIENT_CD =#PATIENT_CD#
+	</select>
+	
+	<!-- 관리항목 업데이트 -->
+	<update id="updateMyInfo" parameterClass="java.util.HashMap">
+		UPDATE TBL_USER_INFO
+		SET    	USER_NM     	= #USER_NM#,
+			       	BRTHDY      	= #BRTHDY#,
+			       	EMAIL       		= #EMAIL#,
+			       	TEL_NO      	= CRYPTO_AES256.ENC_AES(#TEL_NO#),
+			       	UPD_DTTM    	= SYSDATE 
+		WHERE  	PATIENT_CD  	= #PATIENT_CD#
+	</update>
+	
+	<!-- 사용자 정보 조회:세션 새로 등록 -->    
+    <select id="getUserInfo" resultClass="retail.login.service.LoginVO" >
+    	  SELECT T1.PATIENT_CD,
+			       T1.HSPTL_CD,
+			       T1.USER_NM,
+			       T1.BRTHDY,
+			       T1.EMAIL,
+			       T1.TEL_NO,
+			       T1.SEX,
+			       T1.HEIGHT,
+			       T1.HEIGHT_UNIT,
+			       T1.WEIGHT,
+			       T1.WEIGHT_UNIT,
+			       T1.BIGO
+			  FROM TBL_USER_INFO T1
+			 WHERE PATIENT_CD = #PATIENT_CD# 
+    </select>
+	
+</sqlMap>

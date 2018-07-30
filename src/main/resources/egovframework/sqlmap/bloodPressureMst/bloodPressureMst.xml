@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="bloodPressureMst">
+	
+	<!-- 혈압측정입력 -->
+	<update id="insertBpMeasureInfo" parameterClass="java.util.HashMap">
+		<![CDATA[
+			INSERT INTO TBL_BP_MEASURE_INFO
+			(
+			    MEASURE_SEQ
+			    ,PATIENT_CD
+			    ,SYSTOLE_MEASURE_VALUE
+			    ,DIASTOLE_MEASURE_VALUE
+			    ,HEART_RATE_MEASURE_VALUE
+			    ,MEASURE_DT
+			    ,MEASURE_TIME
+			    ,SYSTOLE_BP_STATE
+			    ,DIASTOLE_BP_STATE
+			    ,DEL_YN
+			    ,REG_DTTM 
+			) 
+			SELECT
+			    BP_MEASURE_SEQ.NEXTVAL
+			    ,#PATIENT_CD#
+			    ,CRYPTO_AES256.ENC_AES(#SYSTOLE_MEASURE_VALUE#)
+			    ,CRYPTO_AES256.ENC_AES(#DIASTOLE_MEASURE_VALUE#)
+			    ,CRYPTO_AES256.ENC_AES(#HEART_RATE_MEASURE_VALUE#)
+			    ,#MEASURE_DT#
+		    	,#MEASURE_TIME#
+			    ,(
+			    	SELECT 
+			    		DISEASE_STATE 
+		    		FROM 
+		    			TBL_DISEASE_STDR_INFO 
+    				WHERE 
+    					DISEASE_CD='0002' 
+    					AND MEASURE_GB='01' 
+    					AND STDR_VALUE_FROM<=#SYSTOLE_MEASURE_VALUE# AND  STDR_VALUE_TO>=#SYSTOLE_MEASURE_VALUE#
+				)
+			    ,(
+			    	SELECT 
+			    		DISEASE_STATE 
+		    		FROM 
+		    			TBL_DISEASE_STDR_INFO 
+	    			WHERE 
+	    				DISEASE_CD='0002' 
+	    				AND MEASURE_GB='02' 
+	    				AND STDR_VALUE_FROM<=#DIASTOLE_MEASURE_VALUE# AND  STDR_VALUE_TO>=#DIASTOLE_MEASURE_VALUE#
+		    	) 
+			    , 'N' 
+			    ,SYSDATE
+			FROM DUAL  
+		]]>
+	</update>
+	
+	<!-- 혈당측정업데이트 -->
+	<update id="updateBpMeasureInfo" parameterClass="java.util.HashMap">
+		<![CDATA[
+			UPDATE TBL_BP_MEASURE_INFO SET
+			(
+			    SYSTOLE_MEASURE_VALUE 
+			    ,DIASTOLE_MEASURE_VALUE
+			    ,HEART_RATE_MEASURE_VALUE
+			    ,MEASURE_DT
+			    ,MEASURE_TIME
+			    ,SYSTOLE_BP_STATE
+			    ,DIASTOLE_BP_STATE
+			    ,DEL_YN
+			    ,REG_DTTM 
+			)
+			=
+			(
+			    SELECT  
+			        CRYPTO_AES256.ENC_AES(#SYSTOLE_MEASURE_VALUE#)
+			        ,CRYPTO_AES256.ENC_AES(#DIASTOLE_MEASURE_VALUE#)
+			        ,CRYPTO_AES256.ENC_AES(#HEART_RATE_MEASURE_VALUE#)
+			        ,#MEASURE_DT#
+			        ,#MEASURE_TIME#
+			        ,(
+				    	SELECT 
+				    		DISEASE_STATE 
+			    		FROM 
+			    			TBL_DISEASE_STDR_INFO 
+	    				WHERE 
+	    					DISEASE_CD='0002' 
+	    					AND MEASURE_GB='01' 
+	    					AND STDR_VALUE_FROM<=#SYSTOLE_MEASURE_VALUE# AND  STDR_VALUE_TO>=#SYSTOLE_MEASURE_VALUE#
+					)
+					 ,(
+				    	SELECT 
+				    		DISEASE_STATE 
+			    		FROM 
+			    			TBL_DISEASE_STDR_INFO 
+		    			WHERE 
+		    				DISEASE_CD='0002' 
+		    				AND MEASURE_GB='02' 
+		    				AND STDR_VALUE_FROM<=#DIASTOLE_MEASURE_VALUE# AND  STDR_VALUE_TO>=#DIASTOLE_MEASURE_VALUE#
+			    	) 
+			        ,'N'
+			        ,SYSDATE
+			    FROM DUAL 
+			)
+			WHERE MEASURE_SEQ=#MEASURE_SEQ#
+		]]>
+	</update>
+
+</sqlMap>

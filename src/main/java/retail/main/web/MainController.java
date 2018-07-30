@@ -1,0 +1,320 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package retail.main.web;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.google.gson.Gson;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+
+import retail.common.CommonUtil;
+import retail.common.JqGridResult;
+import retail.common.SessionModel;
+import retail.common.service.CommVO;
+import retail.login.service.LoginService;
+import retail.login.service.LoginVO;
+import retail.main.service.MainService;
+import retail.main.service.MainVO;
+import retail.seed.SeedCipher;
+
+/**
+ * @Class Name : MainController.java
+ * @Description : 메인화면
+ * @Modification Information @ @ 수정일 수정자 수정내용 @ --------- ---------
+ * @author 문희훈
+ * @since 2016. 10.31
+ * @version 1.0
+ * @see Copyright (C) by RETILTECH All right reserved.
+ */
+
+@Controller
+public class MainController {
+
+	@Autowired
+	private MainService mainService;
+	@Autowired
+	private LoginService loginService;
+	@Autowired
+	private MessageSource messageSource;
+	
+	/** log */
+	private final Log log = LogFactory.getLog(this.getClass());
+
+	/**
+	 * 메인화면이동
+	 * @param  
+	 * @param model
+	 * @return "mav"
+	 * @exception Exception
+	 */
+	@RequestMapping(value = "/goMain.do", method = RequestMethod.POST)
+	public ModelAndView goMain(HttpServletRequest request, HttpServletResponse response )throws Exception { 
+		
+		try {
+			 
+			String PATIENT_CD    = request.getParameter("PATIENT_CD");
+			String USER_PW  = request.getParameter("USER_PW");
+			
+			LoginVO params = new LoginVO();
+			params.setPATIENT_CD(PATIENT_CD);
+			params.setUSER_PW(USER_PW); 
+			params.setREG_IP(CommonUtil.getIpAddr());
+			
+			List<LoginVO> resultList = loginService.login(params);
+			//result = ajaxServiceSelect(result);
+			
+			
+			JqGridResult jqGridResult = new JqGridResult(resultList.size());
+			
+			if( resultList.size() > 0 )
+			{
+				
+				//로그인 이력 저장
+				loginService.insertLoginInfo(params);
+				
+				// 여기에 세션 추가
+				SessionModel env = new SessionModel();
+				env.setPATIENT_CD(resultList.get(0).getPATIENT_CD()); 
+				
+				env.setPATIENT_CD(resultList.get(0).getPATIENT_CD()); 
+				env.setHSPTL_CD(resultList.get(0).getHSPTL_CD()); 
+				env.setUSER_NM(resultList.get(0).getUSER_NM()); 
+				
+				
+				CommonUtil.setEnv(request.getSession(), env); 
+			}
+			 
+			
+			for(LoginVO loginVO : resultList) {
+				jqGridResult.addData(
+						  loginVO.getPATIENT_CD()
+	               		, loginVO.getHSPTL_CD()  
+	               		, loginVO.getUSER_NM()  
+						);
+			} 
+			String jsonStr = jqGridResult.getJsonString(); 
+			response.setContentType("text/json; charset=utf-8"); 
+			response.getWriter().print(jsonStr);
+			
+		} catch (IOException e) {
+			System.err.println("IOException Occured");
+		}
+		
+			ModelAndView mav = new  ModelAndView("retail/main/main");
+			
+			MainVO params = new MainVO();
+			params.setPATIENT_CD(CommonUtil.getEnv(request.getSession()).getPATIENT_CD());
+			params.setHSPTL_CD(CommonUtil.getEnv(request.getSession()).getHSPTL_CD());
+			params.setUSER_NM(CommonUtil.getEnv(request.getSession()).getUSER_NM());
+			
+		return   mav; 
+	}
+	
+	/**
+	 * 메인화면이동
+	 * @param  
+	 * @param model
+	 * @return "mav"
+	 * @exception Exception
+	 */
+	@RequestMapping(value = "/main.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public ModelAndView main(HttpServletRequest request, HttpServletResponse response )throws Exception { 
+		
+			ModelAndView mav = new  ModelAndView("retail/main/main");
+			
+			MainVO params = new MainVO();
+			params.setPATIENT_CD(CommonUtil.getEnv(request.getSession()).getPATIENT_CD());
+			params.setHSPTL_CD(CommonUtil.getEnv(request.getSession()).getHSPTL_CD());
+			params.setUSER_NM(CommonUtil.getEnv(request.getSession()).getUSER_NM());
+			
+		return   mav; 
+	}
+	
+	/**
+	 * 다국어 언어 변경
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/location/changLang.do", method = RequestMethod.GET)
+	public ModelAndView goLogout(HttpServletRequest request, HttpServletResponse response )throws Exception { 
+		 
+		ModelAndView mav = new  ModelAndView("retail/main/location");
+		/*System.out.println(request.getParameter("lang"));*/
+		mav.addObject("lang",request.getParameter("lang"));
+		
+		return   mav; 
+	}
+	
+	 
+	
+	/**
+	 * 메인화면
+	 * @param model
+	 * @return "mav"
+	 * @exception Exception
+	 */
+	@RequestMapping(value = "/mainContents.do", method = RequestMethod.GET)
+	public ModelAndView mainContents(HttpServletRequest request, HttpServletResponse response )throws Exception { 
+		
+		/**
+		 * 다국어 프로퍼티 가지고 오는 샘플
+		 * */
+		String korMessage = messageSource.getMessage("title.sample.regUser",null, "no surch", Locale.KOREA);
+		String engMessage = messageSource.getMessage("title.sample.regUser",null, "no surch", Locale.ENGLISH);
+		System.out.println("KOR: "+korMessage+" ENG: "+engMessage);
+		
+		ModelAndView mav = new  ModelAndView("retail/main/main_contents");
+		return   mav; 
+	}
+	
+	
+	
+	/**
+	 * 최근7일 혈당측정 데이터 조회
+	 * @param MainVO
+	 * @param model
+	 * @return "egovSampleList"
+	 * @exception Exception
+	 */
+	@RequestMapping(value = "/selectMyBsMeasure.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public void selectMyBsMeasure( HttpServletRequest request,HttpServletResponse response)throws Exception {
+			 
+		String PATIENT_CD    = CommonUtil.getEnv(request.getSession()).getPATIENT_CD();
+		
+		List<MainVO> resultList = mainService.selectMyBsMeasure(PATIENT_CD);
+		
+		Gson gson =new Gson();
+		String json = gson.toJson(resultList);
+		response.setCharacterEncoding("UTF-8"); 
+		response.setContentType("text/html; charset=UTF-8");
+
+		response.getWriter().print(json);
+		//return json;
+	}
+	
+	
+	/**
+	 * 최근측정정보, 최근7일특정정보 조회
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/selectMyBsMeasureInfo.do", method=RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> selectMyBsMeasureInfo(HttpServletRequest request, HttpServletResponse response)throws Exception {
+		
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		String PATIENT_CD    = CommonUtil.getEnv(request.getSession()).getPATIENT_CD();
+		String lang          = request.getParameter("lang");
+		
+		MainVO params = new MainVO();
+		MainVO params1 = new MainVO();
+		MainVO params2 = new MainVO();
+		
+		params.setPATIENT_CD(PATIENT_CD);
+		params.setLANGUAGE(lang);
+	
+		params1 = mainService.selectMyBsLastInfo(params);
+		params2 = mainService.selectMyBsSevenDayInfo(params);
+		
+		if(params1 != null){
+			map.put("BS_MEASURE_VALUE", params1.getBS_MEASURE_VALUE());
+			map.put("BS_MEASURE_UNIT", params1.getBS_MEASURE_UNIT());
+			map.put("BS_MEASURE_MENT", params1.getBS_MEASURE_MENT());
+			map.put("BS_LEVEL", params1.getBS_LEVEL());
+			map.put("BS_LEVEL_NM", params1.getBS_LEVEL_NM());
+			map.put("DAY", params1.getDAY());
+			map.put("TIME", params1.getTIME());
+		}else{
+			map.put("BS_MEASURE_VALUE", "0");
+			map.put("BS_MEASURE_UNIT", "mg/dl");
+			map.put("BS_MEASURE_MENT", "혈당 측정을 해주세요");
+			map.put("BS_LEVEL", "02");
+			map.put("BS_LEVEL_NM", "");
+			map.put("DAY", "");
+			map.put("TIME", "");
+		}
+		
+		
+		if(params2 != null){
+			map.put("LOW_CHECK", params2.getLOW_CHECK());
+			map.put("NORMAL_CHECK", params2.getNORMAL_CHECK());
+			map.put("HIGHT_CHECK", params2.getHIGHT_CHECK());
+			map.put("VHIGHT_CHECK", params2.getVHIGHT_CHECK());
+			map.put("MAX_BS_MEASURE_VALUE", params2.getMAX_BS_MEASURE_VALUE());
+			map.put("MIN_BS_MEASURE_VALUE", params2.getMIN_BS_MEASURE_VALUE());
+			map.put("AVG_BS_MEASURE_VALUE", params2.getAVG_BS_MEASURE_VALUE());
+			map.put("TOTAL_BS_MEASURE_CHECK", params2.getTOTAL_BS_MEASURE_CHECK());
+		}else{
+			map.put("MAX_BS_MEASURE_VALUE", "0");
+			map.put("MIN_BS_MEASURE_VALUE", "0");
+			map.put("AVG_BS_MEASURE_VALUE", "0");
+			map.put("LOW_CHECK", "0");
+			map.put("NORMAL_CHECK", "0");
+			map.put("HIGHT_CHECK", "0");
+			map.put("VHIGHT_CHECK", "0");
+			map.put("TOTAL_BS_MEASURE_CHECK", "0");
+		}
+		
+		
+		return map;
+	}
+	
+	/**
+	 * 사용자 몸무게,키,단위등 조회
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getSelectHealthInfo.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public void getSelectHealthInfo( HttpServletRequest request,HttpServletResponse response)throws Exception {
+			 
+		String PATIENT_CD    = CommonUtil.getEnv(request.getSession()).getPATIENT_CD();
+		
+		MainVO resultList = mainService.getSelectHealthInfo(PATIENT_CD);
+		
+		Gson gson =new Gson();
+		String json = gson.toJson(resultList);
+		response.setCharacterEncoding("UTF-8"); 
+		response.setContentType("text/html; charset=UTF-8");
+
+		response.getWriter().print(json);
+		//return json;
+	}
+	
+	
+
+}

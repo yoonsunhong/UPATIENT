@@ -1,0 +1,13 @@
+package retail.bloodPressureTrandView.service;
+
+import java.util.HashMap;
+import java.util.List;
+
+
+public interface BloodPressureTrandViewService {
+
+	List<BloodPressureTrandViewVO> selectMyBpMeasureTrandView(HashMap<String, Object> map);
+	
+	
+	
+}

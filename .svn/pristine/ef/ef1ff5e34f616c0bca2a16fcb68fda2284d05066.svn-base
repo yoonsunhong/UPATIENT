@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="bloodPressureTrandView">
+
+	<select id="selectBpMeasureTrandView10" resultClass="retail.bloodPressureTrandView.service.BloodPressureTrandViewVO" parameterClass="java.util.HashMap">
+	<![CDATA[
+		
+		SELECT
+		    MEASURE_DT
+		    ,CRYPTO_AES256.DEC_AES(SYSTOLE_MEASURE_VALUE) AS SYSTOLE_MEASURE_VALUE
+		    ,CRYPTO_AES256.DEC_AES(DIASTOLE_MEASURE_VALUE) AS DIASTOLE_MEASURE_VALUE
+		FROM 
+		    (    
+		        SELECT 
+		            MEASURE_DT
+		            ,SYSTOLE_MEASURE_VALUE
+		            ,DIASTOLE_MEASURE_VALUE
+		        FROM 
+		        	TBL_BP_MEASURE_INFO  
+		        WHERE 
+		        	PATIENT_CD = #PATIENT_CD#
+		        	AND DEL_YN='N'
+		        ORDER BY 
+		        	MEASURE_DT DESC, MEASURE_TIME DESC
+		    )
+		WHERE ROWNUM<=10 
+		]]>
+    </select>
+	
+	<select id="selectBpMeasureTrandView" resultClass="retail.bloodPressureTrandView.service.BloodPressureTrandViewVO" parameterClass="java.util.HashMap">
+	<![CDATA[
+		
+		SELECT
+		    MEASURE_DT
+		    ,ROUND(SUM(CRYPTO_AES256.DEC_AES(SYSTOLE_MEASURE_VALUE)) / COUNT(SYSTOLE_MEASURE_VALUE)) AS SYSTOLE_MEASURE_VALUE
+		    ,ROUND(SUM(CRYPTO_AES256.DEC_AES(DIASTOLE_MEASURE_VALUE)) / COUNT(DIASTOLE_MEASURE_VALUE)) AS DIASTOLE_MEASURE_VALUE
+		FROM
+		    TBL_BP_MEASURE_INFO
+		WHERE 
+		    PATIENT_CD=#PATIENT_CD#
+		    AND DEL_YN='N'
+		    AND MEASURE_DT BETWEEN TO_CHAR (SYSDATE - #LAST_DAY#-1,'yyyymmdd')  AND TO_CHAR (SYSDATE - 1,'yyyymmdd')
+		GROUP BY 
+		    MEASURE_DT
+		ORDER BY 
+		    MEASURE_DT DESC 
+		]]>
+    </select>
+	
+	
+</sqlMap>

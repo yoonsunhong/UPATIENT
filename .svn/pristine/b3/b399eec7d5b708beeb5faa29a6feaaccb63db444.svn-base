@@ -1,0 +1,72 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<!-- 스프링 메세지 테그사용 :: 다국어 -->
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%--
+    파일명: inc_language.jsp
+    설명:  공통으로 include 할 language 용 tag 맵핑
+    author  : 문희훈
+    since   : 2018.03.08
+    version : 1.0
+    guide : 
+    1. JSP와 JS를 분리하여 개발을 하기 때문에, 프로퍼티 언어별 메세지 셋팅을 자바스크립트 전역변수에 담아 사용 
+    2. JS에서 사용되는 alert, 멘트, innerHtml, grid등에 한글이 사용되는 곳은 전역변수에 담아 사용
+    3. JSP에서 멘트 및 한글을 사용할경우에는 <spring:message code="프로퍼티변수"/> 해당 코드 바로 사용 가능
+    4. 공통 메세지 또는 언어가 추가 되었을 시 다른 개발자에게 공유 및 배포 SVN 처리
+--%>
+<!-- 다국어를 위한 전역변수 js에서 alert, 한글태그 등에 사용-->
+<script type="text/javascript" charset="utf-8">
+var lang = "en";
+
+/**공통 알림 메세지**/
+var msgSaveConfirm = '<spring:message code="msgSaveConfirm"/>'; //저장하시겠습니까?
+var msgSave= '<spring:message code="msgSave"/>'; //저장되었습니다.
+var msgModifyConfirm= '<spring:message code="msgModifyConfirm"/>'; //수정 하시겠습니까?
+var msgModify= '<spring:message code="msgModify"/>'; //수정되었습니다.
+var msgDeleteConfirm= '<spring:message code="msgDeleteConfirm"/>'; //삭제 하시겠습니까?
+var msgDelete= '<spring:message code="msgDelete"/>'; //삭제되었습니다.
+
+
+/**공통 버튼**/
+var btnNew='<spring:message code="btnNew"/>'; //신규
+var btnSave='<spring:message code="btnSave"/>'; //저장
+var btnDel='<spring:message code="btnDel"/>'; //삭제
+var btnSearch='<spring:message code="btnSearch"/>'; //조회
+
+/**그리드 or TEXT**/
+var korean='<spring:message code="korean"/>'; //한글
+var english='<spring:message code="english"/>'; //영어
+var czechia='<spring:message code="czechia"/>'; //체코
+var langSetting='<spring:message code="langSetting"/>'; //언어설정
+
+var customerCode='<spring:message code="customerCode"/>'; //고객코드
+var passWord='<spring:message code="passWord"/>'; //비밀번호
+var autoLogin='<spring:message code="autoLogin"/>'; //자동로그인
+var settingLang='<spring:message code="settingLang"/>'; //언어설정
+var login='<spring:message code="login"/>'; //로그인
+var findPass='<spring:message code="findPass"/>'; //비밀번호 찾기
+var signUp='<spring:message code="signUp"/>'; //회원가입
+var maximum='<spring:message code="maximum"/>'; //최고
+var minimum='<spring:message code="minimum"/>'; //최저
+var average='<spring:message code="average"/>'; //평균
+var totalMeasured='<spring:message code="totalMeasured"/>'; //총측정수
+var veryHighs='<spring:message code="veryHighs"/>'; //매우 높음
+var highs='<spring:message code="highs"/>'; //높음
+var normal='<spring:message code="normal"/>'; //정상
+var nows='<spring:message code="nows"/>'; //낮음
+
+
+/**메세지 (장문)**/
+var msgLogin1='<spring:message code="msgLogin1"/>'; //비밀번호를 분실하셨나요?
+var msgLogin2='<spring:message code="msgLogin2"/>'; //처음이신가요?
+var msgLogin3='<spring:message code="msgLogin3"/>'; //아이디를 입력하세요.
+var msgLogin4='<spring:message code="msgLogin4"/>'; //암호를 입력하세요.
+var msgLogin5='<spring:message code="msgLogin5"/>'; //아이디 암호를 확인하세요.
+
+/**메인화면 TEXT*/
+var msgMain1='<spring:message code="msgMain1"/>'; //최근 측정 정보
+var msgMain2='<spring:message code="msgMain2"/>'; //최근 7일 정보
+
+</script>
+
+
+

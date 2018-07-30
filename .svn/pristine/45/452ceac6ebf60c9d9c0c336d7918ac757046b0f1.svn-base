@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="bloodGlucoseTrandView">
+
+	<select id="selectMyBsMeasureTrandView" resultClass="retail.bloodGlucoseTrandView.service.BloodGlucoseTrandViewVO" parameterClass="java.util.HashMap">
+	<![CDATA[
+		SELECT  TO_CHAR(TO_DATE(COMM_DT,'YYYYMMDD'),'YYYY-MM-DD')    AS COMM_DT
+		,      		MAX(DECODE(GUBUN,'A',BS_MEASURE_VALUE))     			AS AA
+		,       	MAX(DECODE(GUBUN,'B',BS_MEASURE_VALUE))     			AS BB
+		,       	MAX(DECODE(GUBUN,'C',BS_MEASURE_VALUE))     			AS CC
+		,       	MAX(DECODE(GUBUN,'D',BS_MEASURE_VALUE))     			AS DD
+		FROM
+		(        
+		        
+		        SELECT  DT.COMM_DT
+		        ,       DECODE(AA.BS_MEASURE_VALUE,NULL,0,AA.BS_MEASURE_VALUE) AS BS_MEASURE_VALUE
+		        ,       DT.GUBUN 
+		        FROM   
+		        (
+		            SELECT  BS_MEASURE_DT
+		            ,       ROUND (SUM (BS_MEASURE_VALUE) / COUNT (1)) AS BS_MEASURE_VALUE
+		            ,       GUBUN
+		            FROM    
+		            (   
+		                SELECT  BS_MEASURE_DT,
+		                        BS_MEASURE_VALUE,
+		                        CASE BS_MEASURE_POINT
+		                            WHEN '000' THEN 'A'
+		                            WHEN '011' THEN 'B'
+		                            WHEN '021' THEN 'B'
+		                            WHEN '031' THEN 'B'
+		                            WHEN '012' THEN 'C'
+		                            WHEN '022' THEN 'C'
+		                            WHEN '032' THEN 'C'
+		                            WHEN '999' THEN 'D'
+		                        END AS GUBUN
+		                FROM 
+		                (   
+		                    SELECT  ROW_NUMBER() OVER(PARTITION BY BS_MEASURE_DT, BS_MEASURE_POINT ORDER BY BS_MEASURE_DT DESC, BS_MEASURE_TIME DESC)  AS RK
+		                    ,       BS_MEASURE_DT
+		                    ,       BS_MEASURE_TIME
+		                    ,       BS_MEASURE_VALUE
+		                    ,       BS_MEASURE_POINT
+		                    FROM    TBL_BS_MEASURE_INFO
+		                    WHERE   1 = 1
+		                    AND     PATIENT_CD = #PATIENT_CD#
+		                    AND     BS_MEASURE_DT BETWEEN TO_CHAR (SYSDATE - #LAST_DAY#-1,'yyyymmdd')  AND TO_CHAR (SYSDATE - 1,'yyyymmdd')
+		                )
+		                WHERE   1 = 1 
+		                AND     RK = 1
+		            )   GROUP BY BS_MEASURE_DT, GUBUN ORDER BY BS_MEASURE_DT
+		        ) AA,
+		
+		        (
+		            SELECT  BB.COMM_DT
+		            ,       CC.GUBUN 
+		            FROM    ( 
+		                        SELECT  TO_CHAR(SYSDATE-#LAST_DAY# + LEVEL, 'YYYYMMDD') AS COMM_DT
+		                        FROM    DUAL CONNECT BY LEVEL <= SYSDATE-1-SYSDATE+ #LAST_DAY#
+		                    )BB ,
+		                    (   
+		                        SELECT  GUBUN FROM 
+		                        (
+		                            SELECT  CASE CD_ID
+		                                    WHEN '000' THEN 'A'
+		                                    WHEN '011' THEN 'B'
+		                                    WHEN '021' THEN 'B'
+		                                    WHEN '031' THEN 'B'
+		                                    WHEN '012' THEN 'C'
+		                                    WHEN '022' THEN 'C'
+		                                    WHEN '032' THEN 'C'
+		                                    WHEN '999' THEN 'D'
+		                            END     AS  GUBUN 
+		                            FROM    TBL_COMM_CODE_INFO 
+		                            WHERE   CD_CL = 'CD0001'
+		                         ) GROUP BY GUBUN 
+		                      )CC 
+		                      WHERE 1=1
+		                      ORDER BY BB.COMM_DT,CC.GUBUN
+		        )DT
+		        WHERE DT.COMM_DT = AA.BS_MEASURE_DT(+) 
+		        AND   DT.GUBUN = AA.GUBUN(+)
+		        ORDER BY DT.COMM_DT,DT.GUBUN
+		)       GROUP BY TO_CHAR(TO_DATE(COMM_DT,'YYYYMMDD'),'YYYY-MM-DD') ORDER BY COMM_DT
+		]]>
+    </select>
+	
+	
+</sqlMap>

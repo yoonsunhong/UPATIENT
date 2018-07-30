@@ -1,0 +1,804 @@
+<%@ page language="java"   contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@page import="retail.common.BaseEnv" %>
+<%@page import="retail.common.CommonUtil" %>
+<%@page import="retail.common.SessionModel" %>
+<%@page import ="java.util.List" %>
+<%@page import ="java.util.HashMap" %>
+<%@page import ="java.util.ArrayList" %>
+<%@page import ="java.util.List" %>
+<%@page import ="retail.main.service.MainVO" %>
+<%@include file="/WEB-INF/jsp/retail/main/common.jsp" %> 
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+  <meta charset="utf-8" />
+  <!-- 화면보기 비율과 관련된 viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1,0, user-scalable=no, target-densityDpi=medium-dpi" />
+  <!-- 상단바 색상 변경 -->
+  <!-- <meta name="theme-color" content="#0ab4ed"> -->
+  <title> U-patient > 혈당 > 혈당리포트 > 혈당트랜드 </title>
+  <link rel="stylesheet" href="/resources/css/common.css" />
+  <link rel="stylesheet" href="/resources/css/sub.css" />
+  <link rel="stylesheet" href="/resources/css/mediaquery.css" />
+  <script type="text/javascript" src="/resources/js/common.js"></script>
+  <script type="text/javascript" src="/resources/js/comm.js"></script>
+  <script type="text/javascript" src="/resources/js/loader.js"></script><!-- 차트 -->
+  <!-- 바탕화면에 내가 디자인한 아이콘 생성 -->
+  <!-- <link rel="apple-touch-icon-precomposed" href="" /> --><!-- 아이폰 안드로이드폰 모두 가능 -->
+  <!--[if lt IE 9]>
+	<script type="text/javascript" src="js/html5shiv.js"></script>
+  <![endif]-->
+<script type="text/javascript">
+
+	//차트
+	google.charts.load('current', {'packages':['corechart']});
+	google.charts.setOnLoadCallback(drawChart1);
+	
+
+	/* chart1 */
+	function drawChart1() {
+		 var data = new google.visualization.DataTable();
+		 
+		 var chartDateformat     = 'MM-dd';
+
+		 
+	     //그래프에 표시할 컬럼 추가
+	     data.addColumn('datetime' , '날짜');
+	     data.addColumn('number'   , '공복');
+	     data.addColumn('number'   , '식전');
+	     data.addColumn('number'   , '식후');
+	     data.addColumn('number'   , '취침전');
+
+	     //그래프에 표시할 데이터
+	     var dataRow = [];
+	     
+	     jQuery.ajax({
+	 	    type:"POST",
+	 	    url:"/selectMyBsMeasureTrandView.do",
+	 	    data: { LAST_DAY: '8'},
+	 	    dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+	 	    async:false,
+	 	    success : function(chartData) {
+	 			for(var i = 0; i < chartData.length; i++){
+	 				
+	 				var day = [];
+	 				
+	 				day = chartData[i].COMM_DT.split('-');
+	 				var a = parseInt(chartData[i].AA);
+	 				var b = parseInt(chartData[i].BB);
+	 				var c = parseInt(chartData[i].CC);
+	 				var d = parseInt(chartData[i].DD);
+	 				
+	 				dataRow = [new Date(day[0], day[1] -1, day[2]), a, b, c, d];
+	 		       	data.addRow(dataRow);
+	 		   	}
+	 	    },
+	 	    complete : function(chartData) {
+	 	    },
+	 	    error : function(xhr, status, error) {
+	 	    	//CommonJs.alertErrorStatus(xhr.status, error);
+	 	    }
+	 	}); 
+	    
+	    //튤팁 날짜포멧 셋팅
+		var formatter = new google.visualization.DateFormat({pattern: 'MM d, y'});
+		formatter.format(data, 0);
+
+		var 	options = {
+				curveType: 'function',
+				height: 440,
+				legend: { /* 범례 위치 */
+				position: 'top',
+				alignment: 'end', 
+				textStyle: {
+				color: "#7b7b7b"
+				},
+				//height: 900,
+				//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+			},
+			colors: ['#09b6ee', '#fdc82e', '#f14555', '#ff8f29'], /* 라인 색상 */
+			fontSize: '9',
+			pointSize: 5, /* 포인트 크기 */
+			pointShape: 'circle', /* 포인트 모양 */
+			vAxis: {		/* y축 */
+				slantedText: false, /* rotate 0 */
+				textStyle: {
+					color: "#5f5f5f"
+				},
+				viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+		              min:0
+		            }
+			},
+			hAxis: {		/* x축 */
+				slantedText: false, /* rotate 0 */
+				format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+				gridlines: {count: 8},
+				textStyle: {
+					color: "#5f5f5f",
+				},
+			},
+			chartArea: {
+				left: "10%",					/* y축 레이블 말줄임 방지 */
+				width: '85%',
+				backgroundColor: '#fff' /* 차트 배경*/,
+			},
+		};
+
+		var chart = new google.visualization.LineChart(document.getElementById('chart1'));
+		chart.draw(data, options);
+		
+		var hideSal = document.getElementById("selectView");
+		hideSal.onchange = function() {
+			
+			//alert($("#selectView").val());
+			
+			if($("#selectView").val() == ""){
+				view = new google.visualization.DataView(data);
+				options = {
+						curveType: 'function',
+						height: 480,
+						legend: { /* 범례 위치 */
+						position: 'top',
+						alignment: 'end', 
+						textStyle: {
+						color: "#7b7b7b"
+						},
+						//height: 900,
+						//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+					},
+					colors: ['#09b6ee', '#fdc82e', '#f14555', '#ff8f29'], /* 라인 색상 */
+					fontSize: '9',
+					pointSize: 5, /* 포인트 크기 */
+					pointShape: 'circle', /* 포인트 모양 */
+					vAxis: {		/* y축 */
+						slantedText: false, /* rotate 0 */
+						textStyle: {
+							color: "#5f5f5f"
+						},
+						viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+				              min:0
+				            }
+					},
+					hAxis: {		/* x축 */
+						slantedText: false, /* rotate 0 */
+						format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+						gridlines: {count: 8},
+						textStyle: {
+							color: "#5f5f5f",
+						},
+					},
+					chartArea: {
+						left: "10%",					/* y축 레이블 말줄임 방지 */
+						width: '85%',
+						backgroundColor: '#fff' /* 차트 배경*/,
+					},
+				};
+				
+				chart.draw(view, options);
+			}else if($("#selectView").val() == "AA"){
+				view = new google.visualization.DataView(data);
+				view.hideColumns([2]); 
+				view.hideColumns([3]); 
+				view.hideColumns([4]);
+				options = {
+						curveType: 'function',
+						height: 480,
+						legend: { /* 범례 위치 */
+						position: 'top',
+						alignment: 'end', 
+						textStyle: {
+						color: "#7b7b7b"
+						},
+						//height: 900,
+						//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+					},
+					colors: ['#09b6ee'], /* 라인 색상 */
+					fontSize: '9',
+					pointSize: 5, /* 포인트 크기 */
+					pointShape: 'circle', /* 포인트 모양 */
+					vAxis: {		/* y축 */
+						slantedText: false, /* rotate 0 */
+						textStyle: {
+							color: "#5f5f5f"
+						},
+						viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+				              min:0
+				            }
+					},
+					hAxis: {		/* x축 */
+						slantedText: false, /* rotate 0 */
+						format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+						gridlines: {count: 8},
+						textStyle: {
+							color: "#5f5f5f",
+						},
+					},
+					chartArea: {
+						left: "10%",					/* y축 레이블 말줄임 방지 */
+						width: '85%',
+						backgroundColor: '#fff' /* 차트 배경*/,
+					},
+				};
+				chart.draw(view, options);
+			}else if($("#selectView").val() == "BB"){
+				view = new google.visualization.DataView(data);
+				view.hideColumns([1]); 
+				view.hideColumns([3]); 
+				view.hideColumns([4]); 
+				options = {
+						curveType: 'function',
+						height: 480,
+						legend: { /* 범례 위치 */
+						position: 'top',
+						alignment: 'end', 
+						textStyle: {
+						color: "#7b7b7b"
+						},
+						//height: 900,
+						//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+					},
+					colors: ['#fdc82e'], /* 라인 색상 */
+					fontSize: '9',
+					pointSize: 5, /* 포인트 크기 */
+					pointShape: 'circle', /* 포인트 모양 */
+					vAxis: {		/* y축 */
+						slantedText: false, /* rotate 0 */
+						textStyle: {
+							color: "#5f5f5f"
+						},
+						viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+				              min:0
+				            }
+					},
+					hAxis: {		/* x축 */
+						slantedText: false, /* rotate 0 */
+						format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+						gridlines: {count: 8},
+						textStyle: {
+							color: "#5f5f5f",
+						},
+					},
+					chartArea: {
+						left: "10%",					/* y축 레이블 말줄임 방지 */
+						width: '85%',
+						backgroundColor: '#fff' /* 차트 배경*/,
+					},
+				};
+				chart.draw(view, options);
+			}else if($("#selectView").val() == "CC"){
+				view = new google.visualization.DataView(data);
+				view.hideColumns([1]); 
+				view.hideColumns([2]); 
+				view.hideColumns([4]); 
+				options = {
+						curveType: 'function',
+						height: 480,
+						legend: { /* 범례 위치 */
+						position: 'top',
+						alignment: 'end', 
+						textStyle: {
+						color: "#7b7b7b"
+						},
+						//height: 900,
+						//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+					},
+					colors: ['#f14555'], /* 라인 색상 */
+					fontSize: '9',
+					pointSize: 5, /* 포인트 크기 */
+					pointShape: 'circle', /* 포인트 모양 */
+					vAxis: {		/* y축 */
+						slantedText: false, /* rotate 0 */
+						textStyle: {
+							color: "#5f5f5f"
+						},
+						viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+				              min:0
+				            }
+					},
+					hAxis: {		/* x축 */
+						slantedText: false, /* rotate 0 */
+						format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+						gridlines: {count: 8},
+						textStyle: {
+							color: "#5f5f5f",
+						},
+					},
+					chartArea: {
+						left: "10%",					/* y축 레이블 말줄임 방지 */
+						width: '85%',
+						backgroundColor: '#fff' /* 차트 배경*/,
+					},
+				};
+				chart.draw(view, options);
+			}else if($("#selectView").val() == "DD"){
+				view = new google.visualization.DataView(data);
+				view.hideColumns([1]); 
+				view.hideColumns([2]); 
+				view.hideColumns([3]); 
+				options = {
+						curveType: 'function',
+						height: 480,
+						legend: { /* 범례 위치 */
+						position: 'top',
+						alignment: 'end', 
+						textStyle: {
+						color: "#7b7b7b"
+						},
+						//height: 900,
+						//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+					},
+					colors: ['#ff8f29'], /* 라인 색상 */
+					fontSize: '9',
+					pointSize: 5, /* 포인트 크기 */
+					pointShape: 'circle', /* 포인트 모양 */
+					vAxis: {		/* y축 */
+						slantedText: false, /* rotate 0 */
+						textStyle: {
+							color: "#5f5f5f"
+						},
+						viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+				              min:0
+				            }
+					},
+					hAxis: {		/* x축 */
+						slantedText: false, /* rotate 0 */
+						format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+						gridlines: {count: 8},
+						textStyle: {
+							color: "#5f5f5f",
+						},
+					},
+					chartArea: {
+						left: "10%",					/* y축 레이블 말줄임 방지 */
+						width: '85%',
+						backgroundColor: '#fff' /* 차트 배경*/,
+					},
+				};
+				chart.draw(view, options);
+			}
+
+			function resizeChart() {
+				chart.draw(data, options);
+			}
+			if (document.addEventListener) {
+				window.addEventListener('resize', resizeChart);
+			}
+			else if (document.attachEvent) {
+				window.attachEvent('onresize', resizeChart);
+			}
+			else {
+				window.resize = resizeChart;
+			}
+		}
+	}
+	
+	//메인 페이지 이동
+	function goMain(){
+		location.href='/main.do';	
+	}
+	
+	//혈당리포트 > 타임라인 화면으로 이동
+	function bloodGlucoseTimeView(){
+		location.href='/bloodGlucoseTimeView.do';
+	}	
+
+	//혈당리포트 > 혈당트랜드 화면으로 이동
+	function bloodGlucoseTrandView(){
+		location.href='/bloodGlucoseTrandView.do';
+	}	
+
+	//혈당리포트 > 예후진단 화면으로 이동
+	function bloodGlucoseReportView(){
+		location.href='/bloodGlucoseReportView.do';
+	}		
+	
+	//날짜 선택 7일, 14일, 1개월, 3개월 
+	function changeInfo(val){
+		
+		//셀렉트박스 초기화
+		$("#selectView").val("");
+		
+		var data = new google.visualization.DataTable();
+		 
+		var chartDateformat     = 'MM-dd';
+
+		 
+	     //그래프에 표시할 컬럼 추가
+	     data.addColumn('datetime' , '날짜');
+	     data.addColumn('number'   , '공복');
+	     data.addColumn('number'   , '식전');
+	     data.addColumn('number'   , '식후');
+	     data.addColumn('number'   , '취침전');
+
+	     //그래프에 표시할 데이터
+	     var dataRow = [];
+	     
+	     jQuery.ajax({
+	 	    type:"POST",
+	 	    url:"/selectMyBsMeasureTrandView.do",
+	 	    data: { LAST_DAY:val},
+	 	    dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+	 	    async:false,
+	 	    success : function(chartData) {
+	 			for(var i = 0; i < chartData.length; i++){
+	 				
+	 				var day = [];
+	 				
+	 				day = chartData[i].COMM_DT.split('-');
+	 				var a = parseInt(chartData[i].AA);
+	 				var b = parseInt(chartData[i].BB);
+	 				var c = parseInt(chartData[i].CC);
+	 				var d = parseInt(chartData[i].DD);
+	 				
+	 				dataRow = [new Date(day[0], day[1]-1 , day[2]), a, b, c, d];
+	 		       	data.addRow(dataRow);
+	 		   	}
+	 	    },
+	 	    complete : function(chartData) {
+	 	    },
+	 	    error : function(xhr, status, error) {
+	 	    	//CommonJs.alertErrorStatus(xhr.status, error);
+	 	    }
+	 	}); 
+	    
+	    //튤팁 날짜포멧 셋팅
+		var formatter = new google.visualization.DateFormat({pattern: 'MM d, y'});
+		formatter.format(data, 0);
+
+		var 	options = {
+				curveType: 'function',
+				height: 480,
+				legend: { /* 범례 위치 */
+				position: 'top',
+				alignment: 'end', 
+				textStyle: {
+				color: "#7b7b7b"
+				},
+				//height: 900,
+				//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+			},
+			colors: ['#09b6ee', '#fdc82e', '#f14555', '#ff8f29'], /* 라인 색상 */
+			fontSize: '9',
+			pointSize: 5, /* 포인트 크기 */
+			pointShape: 'circle', /* 포인트 모양 */
+			vAxis: {		/* y축 */
+				slantedText: false, /* rotate 0 */
+				textStyle: {
+					color: "#5f5f5f"
+				},
+				viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+		              min:0
+		            }
+			},
+			hAxis: {		/* x축 */
+				slantedText: false, /* rotate 0 */
+				format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+				gridlines: {count: 8},
+				textStyle: {
+					color: "#5f5f5f",
+				},
+			},
+			chartArea: {
+				left: "10%",					/* y축 레이블 말줄임 방지 */
+				width: '85%',
+				backgroundColor: '#fff' /* 차트 배경*/,
+			},
+		};
+
+		var chart = new google.visualization.LineChart(document.getElementById('chart1'));
+		chart.draw(data, options);
+		
+		var hideSal = document.getElementById("selectView");
+		hideSal.onchange = function() {
+			
+			//alert($("#selectView").val());
+			
+			if($("#selectView").val() == ""){
+				view = new google.visualization.DataView(data);
+				options = {
+						curveType: 'function',
+						height: 480,
+						legend: { /* 범례 위치 */
+						position: 'top',
+						alignment: 'end', 
+						textStyle: {
+						color: "#7b7b7b"
+						},
+						//height: 900,
+						//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+					},
+					colors: ['#09b6ee', '#fdc82e', '#f14555', '#ff8f29'], /* 라인 색상 */
+					fontSize: '9',
+					pointSize: 5, /* 포인트 크기 */
+					pointShape: 'circle', /* 포인트 모양 */
+					vAxis: {		/* y축 */
+						slantedText: false, /* rotate 0 */
+						textStyle: {
+							color: "#5f5f5f"
+						},
+						viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+				              min:0
+				            }
+					},
+					hAxis: {		/* x축 */
+						slantedText: false, /* rotate 0 */
+						format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+						gridlines: {count: 8},
+						textStyle: {
+							color: "#5f5f5f",
+						},
+					},
+					chartArea: {
+						left: "10%",					/* y축 레이블 말줄임 방지 */
+						width: '85%',
+						backgroundColor: '#fff' /* 차트 배경*/,
+					},
+				};
+				
+				chart.draw(view, options);
+			}else if($("#selectView").val() == "AA"){
+				view = new google.visualization.DataView(data);
+				view.hideColumns([2]); 
+				view.hideColumns([3]); 
+				view.hideColumns([4]);
+				options = {
+						curveType: 'function',
+						height: 480,
+						legend: { /* 범례 위치 */
+						position: 'top',
+						alignment: 'end', 
+						textStyle: {
+						color: "#7b7b7b"
+						},
+						//height: 900,
+						//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+					},
+					colors: ['#09b6ee'], /* 라인 색상 */
+					fontSize: '9',
+					pointSize: 5, /* 포인트 크기 */
+					pointShape: 'circle', /* 포인트 모양 */
+					vAxis: {		/* y축 */
+						slantedText: false, /* rotate 0 */
+						textStyle: {
+							color: "#5f5f5f"
+						},
+						viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+				              min:0
+				            }
+					},
+					hAxis: {		/* x축 */
+						slantedText: false, /* rotate 0 */
+						format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+						gridlines: {count: 8},
+						textStyle: {
+							color: "#5f5f5f",
+						},
+					},
+					chartArea: {
+						left: "10%",					/* y축 레이블 말줄임 방지 */
+						width: '85%',
+						backgroundColor: '#fff' /* 차트 배경*/,
+					},
+				};
+				chart.draw(view, options);
+			}else if($("#selectView").val() == "BB"){
+				view = new google.visualization.DataView(data);
+				view.hideColumns([1]); 
+				view.hideColumns([3]); 
+				view.hideColumns([4]); 
+				options = {
+						curveType: 'function',
+						height: 480,
+						legend: { /* 범례 위치 */
+						position: 'top',
+						alignment: 'end', 
+						textStyle: {
+						color: "#7b7b7b"
+						},
+						//height: 900,
+						//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+					},
+					colors: ['#fdc82e'], /* 라인 색상 */
+					fontSize: '9',
+					pointSize: 5, /* 포인트 크기 */
+					pointShape: 'circle', /* 포인트 모양 */
+					vAxis: {		/* y축 */
+						slantedText: false, /* rotate 0 */
+						textStyle: {
+							color: "#5f5f5f"
+						},
+						viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+				              min:0
+				            }
+					},
+					hAxis: {		/* x축 */
+						slantedText: false, /* rotate 0 */
+						format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+						gridlines: {count: 8},
+						textStyle: {
+							color: "#5f5f5f",
+						},
+					},
+					chartArea: {
+						left: "10%",					/* y축 레이블 말줄임 방지 */
+						width: '85%',
+						backgroundColor: '#fff' /* 차트 배경*/,
+					},
+				};
+				chart.draw(view, options);
+			}else if($("#selectView").val() == "CC"){
+				view = new google.visualization.DataView(data);
+				view.hideColumns([1]); 
+				view.hideColumns([2]); 
+				view.hideColumns([4]); 
+				options = {
+						curveType: 'function',
+						height: 480,
+						legend: { /* 범례 위치 */
+						position: 'top',
+						alignment: 'end', 
+						textStyle: {
+						color: "#7b7b7b"
+						},
+						//height: 900,
+						//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+					},
+					colors: ['#f14555'], /* 라인 색상 */
+					fontSize: '9',
+					pointSize: 5, /* 포인트 크기 */
+					pointShape: 'circle', /* 포인트 모양 */
+					vAxis: {		/* y축 */
+						slantedText: false, /* rotate 0 */
+						textStyle: {
+							color: "#5f5f5f"
+						},
+						viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+				              min:0
+				            }
+					},
+					hAxis: {		/* x축 */
+						slantedText: false, /* rotate 0 */
+						format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+						gridlines: {count: 8},
+						textStyle: {
+							color: "#5f5f5f",
+						},
+					},
+					chartArea: {
+						left: "10%",					/* y축 레이블 말줄임 방지 */
+						width: '85%',
+						backgroundColor: '#fff' /* 차트 배경*/,
+					},
+				};
+				chart.draw(view, options);
+			}else if($("#selectView").val() == "DD"){
+				view = new google.visualization.DataView(data);
+				view.hideColumns([1]); 
+				view.hideColumns([2]); 
+				view.hideColumns([3]); 
+				options = {
+						curveType: 'function',
+						height: 480,
+						legend: { /* 범례 위치 */
+						position: 'top',
+						alignment: 'end', 
+						textStyle: {
+						color: "#7b7b7b"
+						},
+						//height: 900,
+						//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+					},
+					colors: ['#ff8f29'], /* 라인 색상 */
+					fontSize: '9',
+					pointSize: 5, /* 포인트 크기 */
+					pointShape: 'circle', /* 포인트 모양 */
+					vAxis: {		/* y축 */
+						slantedText: false, /* rotate 0 */
+						textStyle: {
+							color: "#5f5f5f"
+						},
+						viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+				              min:0
+				            }
+					},
+					hAxis: {		/* x축 */
+						slantedText: false, /* rotate 0 */
+						format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+						gridlines: {count: 8},
+						textStyle: {
+							color: "#5f5f5f",
+						},
+					},
+					chartArea: {
+						left: "10%",					/* y축 레이블 말줄임 방지 */
+						width: '85%',
+						backgroundColor: '#fff' /* 차트 배경*/,
+					},
+				};
+				chart.draw(view, options);
+			}
+
+			function resizeChart() {
+				chart.draw(data, options);
+			}
+			if (document.addEventListener) {
+				window.addEventListener('resize', resizeChart);
+			}
+			else if (document.attachEvent) {
+				window.attachEvent('onresize', resizeChart);
+			}
+			else {
+				window.resize = resizeChart;
+			}
+		}
+	}
+</script>
+  
+  
+ </head>
+
+ <body>
+	<!--==================== 전체 영역 시작 ====================-->
+	<div id="wrap" class="bg_trend">
+		<!--==================== 헤더 영역 시작 ====================-->
+		<header id="header">
+			<div class="area">
+				<div>
+					<button type="button" class="btn_style2 btn_menu" onClick="menuBtn();">메뉴</button>
+					<h1 class="tit">혈당리포트</h1>
+					<button type="button" class="btn_style2 btn_setup" onClick="setupBtn();">설정</button>
+				</div>
+			</div>		
+		</header>
+		<!--==================== //헤더 영역 끝 ====================-->
+		<!--==================== 메뉴 영역 시작 ====================-->
+		<!-- 왼쪽 메뉴 시작 -->
+		<%@include file="/WEB-INF/jsp/retail/main/leftMenu.jsp" %>
+		<!-- 왼쪽 메뉴 끝 -->
+		<!-- 오른쪽 메뉴 시작 -->
+		<%@include file="/WEB-INF/jsp/retail/main/rightMenu.jsp" %>
+		<!-- 오른쪽 메뉴 끝 -->
+		<!--==================== //메뉴 영역 끝 ====================-->		
+		<section id="content">
+			<div class="tab clear" id="tab2">
+				<div class="tab_btn_bg">
+					<ul class="tab_btn area clear">
+						<li><a href="#" onClick="bloodGlucoseTimeView()">타임라인</a></li>
+						<li class="on"><a href="#" onClick="bloodGlucoseTrandView()">트랜드</a></li>
+					</ul>
+				</div>
+				<div class="tab clear" id="tab3">	
+					<div class="tab_btn area clear">
+						<ul>
+							<li class="on"><a href=""  onclick="changeInfo(8)">1주</a></li>
+							<li><a href="" onclick="changeInfo(31)">1개월</a></li>
+							<li><a href="" onclick="changeInfo(91)">3개월</a></li>
+						</ul>
+					</div>
+					<div class="tab_cnt">
+						<div class="cnt1">
+<!-- 							<div class="area">
+								<select name="selectView" id="selectView" >
+									<option value="">전체</option>
+									<option value="AA">공복</option>
+									<option value="BB">식전</option>
+									<option value="CC">식후</option>
+									<option value="DD">취침전</option>
+								</select>
+							</div> -->
+							<div id="chart1"><!-- 공복 그래프 영역 --></div>
+							<div id="chart2"><!-- 식전 그래프 영역 --></div>
+							<div id="chart3"><!-- 식후 그래프 영역 --></div>
+							<div id="chart4"><!-- 취침전 영역 --></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!--==================== //섹션 영역 끝 ====================-->
+	</div>
+	<!--==================== //전체 영역 끝 ====================-->
+ </body>
+</html>

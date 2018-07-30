@@ -1,0 +1,45 @@
+#\uacf5\ud1b5 \uba54\uc138\uc9c0
+msgSaveConfirm=Chcete jej ulo\u017eit?
+msgSave=Ulo\u017eeno.
+msgModifyConfirm=Chcete jej upravit?
+msgModify=To byl zm\u011bn\u011bn.
+msgDeleteConfirm=Jste si jisti, \u017ee chcete smazat?
+msgDelete=Odstran\u011bno.
+
+#\uacf5\ud1b5 \ubc84\ud2bc
+btnNew=Nov\u00e9
+btnSave=Ulo\u017eit
+btnDel=Odstranit
+btnSearch=Hledat
+
+#\uadf8\ub9ac\ub4dc TEXT
+korean=Korejsk\u00fd
+english=Americk\u00fd jazyk
+czechia=\u010cesk\u00fd jazyk
+langSetting=Nastaven\u00ed jazyka
+customerCode=Z\u00e1kaznick\u00fd k\u00f3d
+passWord=Heslo
+autoLogin=Automatick\u00e9 p\u0159ihl\u00e1\u0161en\u00ed
+settingLang=Nastaven\u00ed jazyka
+login=P\u0159ihl\u00e1\u0161en\u00ed
+findPass=Naj\u00edt heslo
+signUp=Registrace \u010dlenstv\u00ed
+maximum=Maxim\u00e1ln\u00ed
+minimum=Minim\u00e1ln\u00ed
+average=Pr\u016fm\u011brn\u00fd
+totalMeasured=Celkem m\u011b\u0159eno
+veryHighs=Velmi vysok\u00e1
+highs=Highs
+normal=Norm\u00e1ln\u00ed
+nows=N\u00edzk\u00e1
+
+#\uba54\uc138\uc9c0 (\uc7a5\ubb38)
+msgLogin1=Zapomn\u011bli jste heslo?
+msgLogin2=Je to va\u0161e prvn\u00ed \u010das?
+msgLogin3=Zadejte sv\u00e9 ID.
+msgLogin4=Zadejte sv\u00e9 heslo.
+msgLogin5=Zkontrolujte sv\u00e9 heslo.
+
+#\uba54\uc778\ud654\uba74 TEXT
+msgMain1=Ned\u00e1vn\u00e1 m\u011b\u0159en\u00ed Informace
+msgMain2=Posledn\u00ed 7 dn\u00ed informace

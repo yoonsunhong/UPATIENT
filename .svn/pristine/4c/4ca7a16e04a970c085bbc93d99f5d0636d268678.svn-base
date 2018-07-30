@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+
+<sqlMapConfig>
+  <settings useStatementNamespaces="true"   />  
+
+	<!-- 메인 -->
+    <sqlMap resource="egovframework/sqlmap/main/main.xml" />
+	<sqlMap resource="egovframework/sqlmap/login/login.xml" />
+	
+	<sqlMap resource="egovframework/sqlmap/bloodGlucoseMst/bloodGlucoseMst.xml" />
+	<sqlMap resource="egovframework/sqlmap/bloodGlucoseReportView/bloodGlucoseReportView.xml" />
+	<sqlMap resource="egovframework/sqlmap/bloodGlucoseTimeView/bloodGlucoseTimeView.xml" />
+	<sqlMap resource="egovframework/sqlmap/bloodGlucoseTrandView/bloodGlucoseTrandView.xml" />
+	<sqlMap resource="egovframework/sqlmap/contents/contents.xml" />
+    
+    
+</sqlMapConfig>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="bodyMassIndexTimeView">
+
+	<!-- 타임라인목록 조회 -->
+	<select id="selectBmiTimeLinelList" resultClass="retail.bodyMassIndexTimeView.service.BodyMassIndexTimeViewVO" parameterClass="java.util.HashMap" >
+		<![CDATA[
+			SELECT 
+			    ROWNUM
+			    ,MEASURE_SEQ
+			    ,SUBSTR(MEASURE_DT,0,4) ||'-'||SUBSTR(MEASURE_DT,5,2)||'-'||SUBSTR(MEASURE_DT,7,2) AS MEASURE_DT
+			    ,NVL(DECODE(MEASURE_TIME, NULL, NULL, SUBSTR(MEASURE_TIME,0,2) ||':'||SUBSTR(MEASURE_TIME,3,2)),'-') AS MEASURE_TIME
+			    ,CRYPTO_AES256.DEC_AES(WEIGHT) AS WEIGHT
+			    ,CRYPTO_AES256.DEC_AES(MUSCLE_QY) AS MUSCLE_QY
+			    ,CRYPTO_AES256.DEC_AES(FAT_QY) AS FAT_QY
+			    ,CRYPTO_AES256.DEC_AES(FAT_RATE) AS FAT_RATE
+			    ,CRYPTO_AES256.DEC_AES(BMI) AS BMI
+			    ,CRYPTO_AES256.DEC_AES(BONE_QY) AS BONE_QY
+			    ,CRYPTO_AES256.DEC_AES(MOIST_QY) AS MOIST_QY
+			    ,CRYPTO_AES256.DEC_AES(VIS_FAT_LVL) AS VIS_FAT_LVL
+			    ,BMI_STATE
+			FROM 
+			    TBL_BMI_MEASURE_INFO 
+			WHERE 
+			    PATIENT_CD=#PATIENT_CD#
+			    AND MEASURE_DT BETWEEN #MEASURE_DT_FROM# AND #MEASURE_DT_TO#
+			    AND DEL_YN='N'
+			ORDER BY  
+			    $SORT$
+			    ,ROWNUM ASC
+			    ,MEASURE_TIME ASC
+			]]>
+	</select>
+	
+	
+</sqlMap>

@@ -1,0 +1,710 @@
+<%@ page language="java"   contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@page import="retail.common.BaseEnv" %>
+<%@page import="retail.common.CommonUtil" %>
+<%@page import="retail.common.SessionModel" %>
+<%@page import ="java.util.List" %>
+<%@page import ="java.util.HashMap" %>
+<%@page import ="java.util.ArrayList" %>
+<%@page import ="java.util.List" %>
+<%@page import ="retail.main.service.MainVO" %>
+<%@include file="/WEB-INF/jsp/retail/main/common.jsp" %> 
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+  <meta charset="utf-8" />
+  <!-- 화면보기 비율과 관련된 viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1,0, user-scalable=no, target-densityDpi=medium-dpi" />  
+  <!-- 상단바 색상 변경 -->
+  <!-- <meta name="theme-color" content="#0ab4ed"> -->
+  <title> U-patient > 혈당 > 혈당 리포트 </title>
+  <link rel="stylesheet" href="/resources/css/common.css" />
+  <link rel="stylesheet" href="/resources/css/sub.css" />
+  <link rel="stylesheet" href="/resources/css/mediaquery.css" />
+  <script type="text/javascript" src="/resources/js/common.js"></script>
+  <script type="text/javascript" src="/resources/js/comm.js"></script>
+  <script type="text/javascript" src="/resources/js/loader.js"></script><!-- 차트 -->
+  <!-- 바탕화면에 내가 디자인한 아이콘 생성 -->
+  <!-- <link rel="apple-touch-icon-precomposed" href="" /> --><!-- 아이폰 안드로이드폰 모두 가능 -->
+  <!--[if lt IE 9]>
+	<script type="text/javascript" src="js/html5shiv.js"></script>
+  <![endif]-->
+ </head>
+<script type="text/javascript">
+
+
+$(document).ready(function(){
+	loadingStart();
+	//원 그래프 값 초기화
+	var circleValue1 = 0;
+	var circleValue2 = 0;
+	var circleValue3 = 0;
+	var circleValue4 = 0;
+	
+	//오늘날짜 셋팅
+	var lsToDate = new CommDateManager().before(0, 0, 1).getDate("yyyy.mm.dd");
+	//달력 일주일 전 셋팅
+	var beforeMonthDate = new CommDateManager().before(0, 0, 7).getDate("yyyy.mm.dd");
+	
+	$("#toDay").text(beforeMonthDate);
+	$("#afterDay").text(lsToDate);
+	
+	// 차트 높이 설정
+	var chart1 = $("#chart1");
+	chart1.height(135);
+
+	// 상단 배경 설정
+	$(".bl_bg").css({marginTop:-$(".tab_btn").height(), height:$(".tab_btn").height()});
+	$(".tab_cnt .cnt1").css({backgroundSize:"100%"+ $('.recent_info').height()/2+"px"});
+	
+	//임시로 설정....차트활성화 시 loadingEnd(); 제거 
+	loadingEnd();
+	
+	// 혈당 현재 상태 - 텍스트 크기에 따른 너비 지정
+	var $bgState = $('.bg_info .day_info .f_l:nth-child(2)');
+	var $bgFigure = $('.bg_info .day_info .f_l:first-child');
+	var $bgPad = parseInt($('.bg_info .day_info .clear').css('paddingLeft'))*2;
+
+	$('.bg_info .day_info .clear').width($bgState.innerWidth()+$bgFigure.innerWidth()+$bgPad+1);
+});
+
+
+
+// 차트
+/*
+임시주석->쿼리변경해야함
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart1);
+google.charts.setOnLoadCallback(drawChart2);
+*/
+/* chart1 */
+function drawChart1() {
+	
+	 jQuery.ajax({
+	 	    type:"POST",
+	 	    url:"/selectMyBsMeasureInfo.do",
+	 	    dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+	 	    async:false,
+	 	    success : function(data) {
+	 	    	
+	 	    	//최근 측정 정보
+	 			$("#BS_MEASURE_VALUE").text(data.BS_MEASURE_VALUE);
+	 			$("#BS_MEASURE_UNIT").text(data.BS_MEASURE_UNIT);
+	 			$("#BS_MEASURE_MENT").text(data.BS_MEASURE_MENT);
+	 			$("#BS_LEVEL").text(data.BS_LEVEL);
+	 			$("#BS_LEVEL_NM").text(data.BS_LEVEL_NM);
+	 			$("#DAY").text(data.DAY);
+	 			$("#TIME").text(data.TIME);
+	 			
+	 			if(data.BS_LEVEL == '01'){
+	 				$("#mainFrame").attr('class','stateLow');
+	 			}else if(data.BS_LEVEL == '02'){
+	 				$("#mainFrame").attr('class','stateNormal');
+	 			}else if(data.BS_LEVEL == '03'){
+	 				$("#mainFrame").attr('class','stateHigh');
+	 			}else if(data.BS_LEVEL == '04'){
+	 				$("#mainFrame").attr('class','stateVeryhigh');
+	 			}
+	 			
+	 			//최근 7일 측정 정보
+	 			$("#LOW_CHECK").text(data.LOW_CHECK);
+	 			$("#NORMAL_CHECK").text(data.NORMAL_CHECK);
+	 			$("#HIGHT_CHECK").text(data.HIGHT_CHECK);
+	 			$("#VHIGHT_CHECK").text(data.VHIGHT_CHECK);
+	 			$("#MAX_BS_MEASURE_VALUE").text(data.MAX_BS_MEASURE_VALUE);
+	 			$("#MIN_BS_MEASURE_VALUE").text(data.MIN_BS_MEASURE_VALUE);
+	 			$("#AVG_BS_MEASURE_VALUE").text(data.AVG_BS_MEASURE_VALUE);
+	 			$("#TOTAL_BS_MEASURE_CHECK").text(data.TOTAL_BS_MEASURE_CHECK);
+	 			
+	 			circleValue1 = data.LOW_CHECK;
+	 			circleValue2 = data.NORMAL_CHECK;
+	 			circleValue3 = data.HIGHT_CHECK;
+	 			circleValue4 = data.VHIGHT_CHECK;
+	 			
+	 			loadingEnd();
+	            
+	 	    },
+	 	    complete : function(data) {
+	 	    	//loadingEnd();
+	 	    },
+	 	    error : function(xhr, status, error) {
+	 	    	alert(xhr.status, error);
+	 	    	loadingEnd();
+	 	    }
+	 	});
+	var sum = 0;
+	sum = parseInt(circleValue1) + parseInt(circleValue2) +parseInt(circleValue3) +parseInt(circleValue4);
+	 if(sum == 0){
+		 circleValue2 = 1;
+	 }
+	
+	var data = google.visualization.arrayToDataTable([
+		['state', 'figure'],
+		['매우 높음',  parseInt(circleValue4)],
+		['높음', parseInt(circleValue3)],
+		['정상', parseInt(circleValue2)],
+		['낮음', parseInt(circleValue1)],
+	]);
+
+	var options = {
+		pieHole: 0.6,	/* 차트 구멍 크기, 0~1 */
+		legend: 'none', 	/* 범례 숨기기 */ 
+		colors: ['#f14555', '#ff8f29', '#09b6ee', '#fdc82e'], /* 라인 색상 */
+		fontSize: '14',
+        chartArea: {left: '10%', top: '10%', width: "80%", height: "80%"},
+		'tooltip' : {
+		  trigger: 'none'		// 오버시 툴팁 제거
+		},
+		pieSliceText: 'none',		// 그래프에 나타나는 퍼센티지 제거
+	};
+
+	
+	var chart = new google.visualization.PieChart(document.getElementById('chart1'));
+
+	chart.draw(data, options);
+
+	function resizeChart() {
+		chart.draw(data, options);
+	}
+	if (document.addEventListener) {
+	window.addEventListener('resize', resizeChart);
+	}
+	else if (document.attachEvent) {
+	window.attachEvent('onresize', resizeChart);
+	}
+	else {
+	window.resize = resizeChart;
+	}
+}
+
+/* chart2 */
+function drawChart2() {
+	 var data = new google.visualization.DataTable();
+	 
+	 var chartDateformat     = 'MM-dd';
+
+	 
+     //그래프에 표시할 컬럼 추가
+     data.addColumn('datetime' , '날짜');
+     data.addColumn('number'   , '공복');
+     data.addColumn('number'   , '식전');
+     data.addColumn('number'   , '식후');
+     data.addColumn('number'   , '취침전');
+
+     //그래프에 표시할 데이터
+     var dataRow = [];
+     
+     jQuery.ajax({
+ 	    type:"POST",
+ 	    url:"/selectMyBsMeasure.do",
+ 	    dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+ 	    async:false,
+ 	    success : function(chartData) {
+ 			for(var i = 0; i < chartData.length; i++){
+ 				
+ 				var day = [];
+ 				
+ 				day = chartData[i].COMM_DT.split('-');
+ 				var a = parseInt(chartData[i].AA);
+ 				var b = parseInt(chartData[i].BB);
+ 				var c = parseInt(chartData[i].CC);
+ 				var d = parseInt(chartData[i].DD);
+ 				
+ 				dataRow = [new Date(day[0], day[1]-1 , day[2]), a, b, c, d];
+ 		       	data.addRow(dataRow);
+ 		   	}
+ 	    },
+ 	    complete : function(chartData) {
+ 	    },
+ 	    error : function(xhr, status, error) {
+ 	    	//CommonJs.alertErrorStatus(xhr.status, error);
+ 	    }
+ 	}); 
+    
+    //튤팁 날짜포멧 셋팅
+	var formatter = new google.visualization.DateFormat({pattern: 'MM d, y'});
+	formatter.format(data, 0);
+
+	var 	options = {
+			curveType: 'function',
+			//height: 250,
+			legend: { /* 범례 위치 */
+			position: 'top',
+			alignment: 'end', 
+			textStyle: {
+			color: "#7b7b7b"
+			},
+			//height: 900,
+			//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+		},
+		colors: ['#09b6ee', '#fdc82e', '#f14555', '#ff8f29'], /* 라인 색상 */
+		fontSize: '9',
+		pointSize: 5, /* 포인트 크기 */
+		pointShape: 'circle', /* 포인트 모양 */
+		vAxis: {		/* y축 */
+			slantedText: false, /* rotate 0 */
+			textStyle: {
+				color: "#5f5f5f"
+			},
+			viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+	              min:0
+	            }
+		},
+		hAxis: {		/* x축 */
+			slantedText: false, /* rotate 0 */
+			format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+			textStyle: {
+				color: "#5f5f5f",
+			},
+		},
+		chartArea: {
+			left: "10%",					/* y축 레이블 말줄임 방지 */
+			width: '85%',
+			backgroundColor: '#fff' /* 차트 배경*/,
+		},
+	};
+
+	var chart = new google.visualization.LineChart(document.getElementById('chart2'));
+	chart.draw(data, options);
+
+	function resizeChart() {
+		chart.draw(data, options);
+	}
+	if (document.addEventListener) {
+	window.addEventListener('resize', resizeChart);
+	}
+	else if (document.attachEvent) {
+	window.attachEvent('onresize', resizeChart);
+	}
+	else {
+	window.resize = resizeChart;
+	}
+}
+
+
+function test(){
+	var data = new google.visualization.DataTable();
+	 
+	 var chartDateformat     = 'MM-dd';
+
+	 
+    //그래프에 표시할 컬럼 추가
+    data.addColumn('datetime' , '날짜');
+    data.addColumn('number'   , '공복');
+    data.addColumn('number'   , '식전');
+    data.addColumn('number'   , '식후');
+    data.addColumn('number'   , '취침전');
+
+    //그래프에 표시할 데이터
+    var dataRow = [];
+    
+    jQuery.ajax({
+	    type:"POST",
+	    url:"/selectMyBsMeasure.do",
+	    dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+	    async:false,
+	    success : function(chartData) {
+			for(var i = 0; i < chartData.length; i++){
+				
+				var day = [];
+				
+				day = chartData[i].COMM_DT.split('-');
+				var a = parseInt(1);
+				var b = parseInt(5);
+				var c = parseInt(2);
+				var d = parseInt(4);
+				
+				dataRow = [new Date(day[0], day[1]-1 , day[2]), a, b, c, d];
+		       	data.addRow(dataRow);
+		   	}
+	    },
+	    complete : function(chartData) {
+	    },
+	    error : function(xhr, status, error) {
+	    	//CommonJs.alertErrorStatus(xhr.status, error);
+	    }
+	}); 
+   
+   //튤팁 날짜포멧 셋팅
+	var formatter = new google.visualization.DateFormat({pattern: 'MM d, y'});
+	formatter.format(data, 0);
+
+	var 	options = {
+			curveType: 'function',
+			//height: 250,
+			legend: { /* 범례 위치 */
+			position: 'top',
+			alignment: 'end', 
+			textStyle: {
+			color: "#7b7b7b"
+			},
+			//height: 900,
+			//chartArea: {position: 'absolute', left: '10%', top: 0, width: "100%", height: 300},
+		},
+		colors: ['#09b6ee', '#fdc82e', '#f14555', '#ff8f29'], /* 라인 색상 */
+		fontSize: '9',
+		pointSize: 5, /* 포인트 크기 */
+		pointShape: 'circle', /* 포인트 모양 */
+		vAxis: {		/* y축 */
+			slantedText: false, /* rotate 0 */
+			textStyle: {
+				color: "#5f5f5f"
+			},
+			viewWindow: { /*Y축 최소,최대값 정의 min, max*/
+	              min:0
+	            }
+		},
+		hAxis: {		/* x축 */
+			slantedText: false, /* rotate 0 */
+			format: chartDateformat,  /*MM월dd일 x축 날짜 포멧 셋팅*/
+			textStyle: {
+				color: "#5f5f5f",
+			},
+		},
+		chartArea: {
+			left: "10%",					/* y축 레이블 말줄임 방지 */
+			width: '85%',
+			backgroundColor: '#fff' /* 차트 배경*/,
+		},
+	};
+
+	var chart = new google.visualization.LineChart(document.getElementById('chart2'));
+	chart.draw(data, options);
+
+	function resizeChart() {
+		chart.draw(data, options);
+	}
+	if (document.addEventListener) {
+	window.addEventListener('resize', resizeChart);
+	}
+	else if (document.attachEvent) {
+	window.attachEvent('onresize', resizeChart);
+	}
+	else {
+	window.resize = resizeChart;
+	}
+}
+
+function loadingStart(){
+	//alert("로딩 시작");
+	$("body").after("<div class='over_bg'></div><div class='square'><div class='spin'></div></div>");
+}
+
+function loadingEnd(){
+	//alert("로딩 종료");
+	$(".over_bg, .square").hide();
+}
+
+//로그아웃
+function logOut(){
+	location.href='/logout.do?lang='+lang;
+}
+
+//탭1 클릭
+function goTab1(){
+	$('#tab1').addClass('on').focus();
+	$('.tab_cnt .cnt1').show();
+}
+//탭2 클릭
+function goTab2(){
+	alert("서비스 준비중입니다.");
+	return;
+	
+	$('#tab1').addClass('on');
+	$(this).removeClass('on');
+	$('.tab_cnt .cnt1').show();
+	$('.tab_cnt .cnt2, .tab_cnt .cn3').hide();
+	
+}
+//탭3 클릭
+function goTab3(){
+	alert("서비스 준비중입니다.");
+	return;
+	
+	$('#tab1').addClass('on');
+	$(this).removeClass('on');
+	$('.tab_cnt .cnt1').show();
+	$('.tab_cnt .cnt2, .tab_cnt .cn3').hide();	
+	
+}
+
+
+</script>
+ <body>
+ 	<!-- <button type="button" class="" onClick="loadingStart();">로딩시작</button>
+	<button type="button" class="" onClick="loadingEnd();">로딩종료</button> -->
+	<!--==================== 전체 영역 시작 ====================-->
+	<div id="wrap" class="main">
+		<!--==================== 헤더 영역 시작 ====================-->
+		<header id="header">
+			<div class="area">
+				<div>
+					<button type="button" class="btn_style2 btn_menu" onClick="menuBtn();">메뉴</button>
+					<h1 class="tit">u-Patient</h1>
+					<button type="button" class="btn_style2 btn_setup" onClick="setupBtn();">설정</button>
+				</div>
+			</div>		
+		</header>
+		<!--==================== //헤더 영역 끝 ====================-->
+		<!--==================== 메뉴 영역 시작 ====================-->
+		<!-- 왼쪽 메뉴 시작 -->
+		<%@include file="/WEB-INF/jsp/retail/main/leftMenu.jsp" %>
+		<!-- 왼쪽 메뉴 끝 -->
+		<!-- 오른쪽 메뉴 시작 -->
+		<%@include file="/WEB-INF/jsp/retail/main/rightMenu.jsp" %>
+		<!-- 오른쪽 메뉴 끝 -->
+		<!--==================== //메뉴 영역 끝 ====================-->
+		<!--==================== 섹션 영역 시작 ====================-->
+		<section id="content">
+			<h2 class='tit'><img src="/resources/images/icon/main_time.png"><spring:message code="msgMain1"/><!-- 최근 측정 정보 --></h2>
+			<div class="new_info area">
+				<!-- 혈당 시작 -->
+				<div class="bg_info">
+					<div class="clear">
+						<h3 class="f_l tit">혈당</h3>
+						<span class="f_r now_date">2017-08-15 PM 06:01</span>
+					</div>
+					<div class="">
+						<div class="day_info">
+							<div class="clear">
+								<div class="f_l figure normal"><p>98</p><p>mg/dl</p></div>
+								<div class="f_l"><p>정상</p><p>저녁식사 후</p></div>
+								<!-- <div class="f_l"><p>Very High</p><p>After Breakfast</p></div> -->
+							</div>
+						</div>
+						<div class="week_info">
+							<h4><spring:message code="msgMain2"/> (<span id="toDay"></span> ~ <span id="afterDay"></span>)</h4>
+							<div class="clear">
+								<div class="f_l">
+									<div id="chart1"><!-- 차트1 --></div>
+									<div><p><spring:message code="totalMeasured"/></p><p id="TOTAL_BS_MEASURE_CHECK"></p></div>
+								</div>
+								<div class="f_r list">
+									<ul>
+										<li><p><spring:message code="veryHighs"/></p><p id="VHIGHT_CHECK"></p></li>
+										<li><p><spring:message code="highs"/></p><p id="HIGHT_CHECK"></p></li>
+										<li><p><spring:message code="normal"/></p><p id="NORMAL_CHECK"></p></li>
+										<li><p><spring:message code="nows"/></p><p id="LOW_CHECK"></p></li>
+									</ul>
+								</div>
+							</div>							
+						</div>
+					</div>
+				</div>
+				<!-- //혈당 끝 -->
+				<!-- 혈압 시작 -->
+				<div class="bp_info">
+					<div class="clear">
+						<h3 class="f_l tit">혈압</h3>
+						<span class="f_r now_date">2017-08-15 PM 06:01</span>
+					</div>
+					<div class="">
+						<div class="day_info clear">
+							<div class="f_l danger">
+								<!-- <p>수축기</p><p>120</p><p>mg/dl</p><div class="figure danger">2기 고혈압</div> -->
+								<p>Systole</p><p>120<span>mg/dl</span></p><div class="figure">High: Stage 2</div>
+							</div>						
+							<div class="f_r high">
+								<!-- <p>이완기</p><p>120</p><p>mg/dl</p><div class="figure high">고혈압전단계</div> -->
+								<p>Diastole</p><p>120<span>mg/dl</span></p><div class="figure">Prehypertension</div>
+							</div>
+						</div>
+						<div class="week_info">
+							<h4><spring:message code="msgMain2"/> (<span id="toDay"></span> ~ <span id="afterDay"></span>)</h4>
+							<div class="clear">
+								<div class="f_l list">
+									<h5 class="">수축기</h5>
+									<ul>
+										<li><p class="figure danger"></p><p>High: Stage 2</p><p>6</p></li>
+										<li><p class="figure warning"></p><p>High: Stage 1</p><p>10</p></li>
+										<li><p class="figure high"></p><p>Prehypertension</p><p>5</p></li>
+										<li><p class="figure normal"></p><p>Normal</p><p>37</p></li>
+										<li><p class="figure low"></p><p>Low</p><p>3</p></li>
+										<!--
+										<li><p class="figure danger"></p><p>High: Stage 2</p><p>6</p></li>
+										<li><p class="figure warning"></p><p>High: Stage 1</p><p>10</p></li>
+										<li><p class="figure high"></p><p>Prehypertension</p><p>5</p></li>
+										<li><p class="figure normal"></p><p>Normal</p><p>37</p></li>
+										<li><p class="figure low"></p><p>Low</p><p>3</p></li>
+										 -->									
+									</ul>
+								</div>
+								<div class="f_r list">
+									<h5 class="">이완기</h5>
+									<ul>
+										<li><p class="figure danger"></p><p>High: Stage 2</p><p>6</p></li>
+										<li><p class="figure warning"></p><p>High: Stage 1</p><p>10</p></li>
+										<li><p class="figure high"></p><p>Prehypertension</p><p>5</p></li>
+										<li><p class="figure normal"></p><p>Normal</p><p>37</p></li>
+										<li><p class="figure low"></p><p>Low</p><p>3</p></li>
+										<!--
+										<li><p class="figure danger"></p><p>High: Stage 2</p><p>6</p></li>
+										<li><p class="figure warning"></p><p>High: Stage 1</p><p>10</p></li>
+										<li><p class="figure high"></p><p>Prehypertension</p><p>5</p></li>
+										<li><p class="figure normal"></p><p>Normal</p><p>37</p></li>
+										<li><p class="figure low"></p><p>Low</p><p>3</p></li>
+										 -->	
+									</ul>
+								</div>
+							</div>							
+						</div>
+					</div>
+				</div>
+				<!-- //혈압 끝 -->				
+				<!-- BMI 시작 -->
+				<div class="bmi_info">
+					<div class="clear">
+						<h3 class="f_l tit">BMI</h3>
+						<span class="f_r now_date">2017-08-15 PM 06:01</span>
+					</div>
+					<div class="day_info">
+						<div>
+							<div class="figure normal">Normal</div>
+							<div class="clear">
+								<p>
+									<span>Weight</span>
+									<strong><strong>132.5</strong><span>kg</span></strong>
+								</p>
+								<p>
+									<span>Fat Rate</span>
+									<strong><strong>26.7</strong><span>%</span></strong>
+								</p>
+								<p><span>BMI</span><strong><strong>24.5</strong><span>kg/m2</span></strong></p>								
+							</div>
+						</div>
+					</div>	
+				</div>
+				<!-- //BMI 끝 -->				
+				<!-- 활동 시작 -->
+				<div class="act_info">
+					<div class="clear">
+						<h3 class="f_l tit">활동</h3>
+						<span class="f_r now_date">2017-08-15 PM 06:01</span>
+					</div>
+					<div class="day_info">
+						<div class="clear">
+							<p>
+								<span>distance</span>
+								<strong><strong>32.5</strong><span>km</span></strong>
+							</p>
+							<p>
+								<span>step count</span>
+								<strong><strong>1,890</strong><span>step</span></strong>
+							</p>
+							<p><span>calorie</span><strong><strong>1,890</strong><span>kcal</span></strong></p>								
+						</div>
+					</div>	
+				</div>
+				<!-- //활동 끝 -->		
+			</div>
+<%-- 			<div class="tab clear" id="tab1">
+				<div class="bl_bg"></div>
+				<div class="tab_cnt">
+					<div class="cnt1">
+						<div class="recent_info area">
+							<h3 class="tit"><spring:message code="msgMain1"/></h3>
+							<div class="clear">
+								<div id="mainFrame" class="stateVeryhigh">
+									<div class="f_l">
+										<div class="look"></div>
+										<div class="figure">
+											<div>
+												<p id="BS_MEASURE_VALUE"></p><p id="BS_MEASURE_UNIT"></p>
+											</div>
+										</div>
+									</div>
+									<div class="f_r">
+										<p class="state" id="BS_LEVEL_NM"></p>
+										<p id="BS_MEASURE_MENT"></p>
+										<p id="DAY"></p>
+										<p id="TIME"></p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="week_info">
+							<h3 class="tit">
+								<spring:message code="msgMain2"/> (<span id="toDay"></span> ~ <span id="afterDay"></span>)
+								<!-- <a href="#" onclick="test()">aaaaaaa</a> -->
+							</h3>
+							<div class="area">
+								<div class="clear">
+									<div class="f_l">
+										<div id="chart1"><!-- 차트1 --></div>
+										<div><p><spring:message code="totalMeasured"/></p><p id="TOTAL_BS_MEASURE_CHECK"></p></div>
+									</div>
+									<div class="f_r">
+										<ul>
+											<li><p><spring:message code="veryHighs"/></p><p id="VHIGHT_CHECK"></p></li>
+											<li><p><spring:message code="highs"/></p><p id="HIGHT_CHECK"></p></li>
+											<li><p><spring:message code="normal"/></p><p id="NORMAL_CHECK"></p></li>
+											<li><p><spring:message code="nows"/></p><p id="LOW_CHECK"></p></li>
+										</ul>
+									</div>
+								</div>
+								<div class="state_intro clear">
+									<div class="high">
+										<div class="figure"><span><spring:message code="maximum"/></span></div>
+										<div>
+											<p id="MAX_BS_MEASURE_VALUE"></p><p>mg/dL</p>
+										</div>
+									</div>
+									<div class="low">
+										<div class="figure"><span><spring:message code="minimum"/></span></div>
+										<div>
+											<p id="MIN_BS_MEASURE_VALUE"></p><p>mg/dL</p>
+										</div>
+									</div>
+									<div class="ave">
+										<div class="figure"><span><spring:message code="average"/></span></div>
+										<div>
+											<p id="AVG_BS_MEASURE_VALUE"></p><p>mg/dL</p>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div id="chart2" class="chart2"><!-- 차트2 --></div>
+						</div>
+					</div>		
+					<div class="cnt2">
+						<div class="area">혈압</div>
+					</div>
+					<div class="cnt3">
+						<div class="area">BMI</div>
+					</div>
+				</div>
+			</div> --%>
+			<!-- 블루투스 혈당측정 등록 API테스트 
+			<form method='post' name='myform' action='/insertBtBloodGlucose.do'>
+				<input type=text name='PATIENT_CD' id='PATIENT_CD' value='PA001'>
+				<input type=text name='DISEASE_CD' id='DISEASE_CD' value='0001'>
+				<input type=text name='BS_MEASURE_VALUE' id='BS_MEASURE_VALUE' value='98'>
+				<input type=text name='BS_MEASURE_UNIT' id='BS_MEASURE_UNIT' value='mg/dL'>
+				<input type=text name='BS_MEASURE_DT' id='BS_MEASURE_DT' value='20171022'>
+				<input type=text name='BS_MEASURE_TIME' id='BS_MEASURE_TIME' value='152300'>
+				<input type=text name='BS_MEASURE_POINT' id='BS_MEASURE_POINT' value='022'>
+				<input type=text name='WEIGHT' id='WEIGHT' value='80'>
+				<input type=text name='WEIGHT_UNIT' id='WEIGHT_UNIT' value='kg'>
+				<input type=submit value="승인" >
+			</form> -->
+			
+			<!-- 의료기기 등록 API테스트 
+			<form method='post' name='myform' action='/ insertMeasureDeviceInfo.do'>
+				<input type=text name='MEASURE_DEVICE_ESNTL_NO' id= MEASURE_DEVICE_ESNTL_NO' value=' sn1234567'>
+			    <input type=text name='PATIENT_CD' id='PATIENT_CD' value='PA001'>
+			    <input type=text name='DISEASE_CD' id='DISEASE_CD' value='0001'>
+				<input type=text name='MEASURE_DEVICE_CD' id=' MEASURE_DEVICE_CD ' value='0001'>
+				<input type=submit value="등록" >
+			</form> -->
+
+						
+			<button type="button" class="input_btn" onclick="bloodGlucoseMst()">수동 입력</button>
+		</section>
+		<!--==================== //섹션 영역 끝 ====================-->
+	</div>
+	<!-- <div class="over_bg"></div> -->
+	<!--==================== //전체 영역 끝 ====================-->
+ </body>
+</html>
+

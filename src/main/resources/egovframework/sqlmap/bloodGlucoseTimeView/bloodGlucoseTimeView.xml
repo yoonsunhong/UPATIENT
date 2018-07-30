@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="bloodGlucoseTimeView">
+
+	<!-- 타임라인목록 조회 -->
+	<select id="selectBsTimeLinelList" resultClass="retail.bloodGlucoseTimeView.service.BloodGlucoseTimeViewVO" parameterClass="java.util.HashMap" >
+		<![CDATA[
+	   	
+	   	SELECT
+		    ROWNUM
+		    ,B.MEASURE_SEQ
+		    ,SUBSTR(A.COMM_DT,0,4) ||'-'||SUBSTR(A.COMM_DT,5,2)||'-'||SUBSTR(A.COMM_DT,7,2) AS MEASURE_DT
+		    ,NVL(DECODE(B.MEASURE_TIME, NULL, NULL, SUBSTR(B.MEASURE_TIME,0,2) ||':'||SUBSTR(B.MEASURE_TIME,3,2)),'-') AS MEASURE_TIME
+		    ,B.BS_MEASURE_POINT
+		    ,A.CD_NM AS BS_MEASURE_POINT_NM
+		    ,NVL(CRYPTO_AES256.DEC_AES(B.BS_MEASURE_VALUE),0) AS BS_MEASURE_VALUE 
+		    ,NVL(B.BS_MEASURE_UNIT,'-') AS BS_MEASURE_UNIT
+		    ,B.BS_STATE
+		    ,A.SORT_ORDER   
+		FROM 
+		    (
+		        SELECT
+		            DT.COMM_DT,
+		            CI.CD_ID,
+		            CI.CD_NM,
+		            CI.SORT_ORDER
+		        FROM     
+		            TBL_COMM_CODE_INFO CI,  
+		            (    
+		                SELECT 
+		                    TO_CHAR(TO_DATE(#MEASURE_DT_FROM#, 'YYYYMMDD')+LEVEL-1, 'YYYYMMDD') AS COMM_DT
+		                FROM DUAL
+		                CONNECT BY LEVEL <= (TO_DATE(#MEASURE_DT_TO#, 'YYYYMMDD')-TO_DATE(#MEASURE_DT_FROM#, 'YYYYMMDD')+1)
+		            ) DT
+		    WHERE  CI.CD_CL='CD0001'  AND CI.LNG_GB=#LANG#  
+		    ) A,
+		    (
+		        SELECT
+		            MEASURE_SEQ
+		            ,PATIENT_CD
+		            ,BS_MEASURE_VALUE
+		            ,BS_MEASURE_UNIT
+		            ,MEASURE_DT
+		            ,MEASURE_TIME
+		            ,BS_MEASURE_POINT
+		            ,BS_STATE    
+		            ,RN
+		        FROM
+		        (
+		            SELECT 
+		                MEASURE_SEQ
+		                ,PATIENT_CD
+		                ,BS_MEASURE_VALUE
+		                ,BS_MEASURE_UNIT
+		                ,MEASURE_DT
+		                ,MEASURE_TIME
+		                ,BS_MEASURE_POINT
+		                ,BS_STATE
+		                ,ROW_NUMBER() OVER(PARTITION BY MEASURE_DT, BS_MEASURE_POINT ORDER BY MEASURE_DT DESC, MEASURE_SEQ DESC) AS RN
+		            FROM 
+		                TBL_BS_MEASURE_INFO
+		            WHERE
+		                PATIENT_CD=#PATIENT_CD#
+		                AND MEASURE_DT BETWEEN #MEASURE_DT_FROM# AND #MEASURE_DT_TO#
+		                AND DEL_YN='N'
+		            ORDER BY 
+		                MEASURE_DT
+		                ,BS_MEASURE_POINT   
+		        )             
+		        WHERE RN='1'
+		    )B
+		WHERE
+		    A.COMM_DT = B.MEASURE_DT(+)
+		    AND A.CD_ID = B.BS_MEASURE_POINT(+)
+		ORDER BY 
+		   $SORT$
+		    ,A.SORT_ORDER ASC    
+		]]>
+	</select>
+	
+	
+</sqlMap>

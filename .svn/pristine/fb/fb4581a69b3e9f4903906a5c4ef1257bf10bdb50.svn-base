@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+
+<sqlMapConfig>
+  <settings useStatementNamespaces="true"   />  
+
+	<!-- 메인 -->
+    <sqlMap resource="egovframework/sqlmap/main/main.xml" />
+	<sqlMap resource="egovframework/sqlmap/login/login.xml" />
+	
+	<!-- 혈당 -->
+	<sqlMap resource="egovframework/sqlmap/bloodGlucoseMst/bloodGlucoseMst.xml" />
+	<sqlMap resource="egovframework/sqlmap/bloodGlucoseReportView/bloodGlucoseReportView.xml" />
+	<sqlMap resource="egovframework/sqlmap/bloodGlucoseTimeView/bloodGlucoseTimeView.xml" />
+	<sqlMap resource="egovframework/sqlmap/bloodGlucoseTrandView/bloodGlucoseTrandView.xml" />
+	
+	<!-- 혈압 -->
+	<sqlMap resource="egovframework/sqlmap/bloodPressureMst/bloodPressureMst.xml" />
+	<sqlMap resource="egovframework/sqlmap/bloodPressureTimeView/bloodPressureTimeView.xml" />
+	<sqlMap resource="egovframework/sqlmap/bloodPressureTrandView/bloodPressureTrandView.xml" />
+	
+	<!-- BMI -->
+	<sqlMap resource="egovframework/sqlmap/bodyMassIndexMst/bodyMassIndexMst.xml" />
+	<sqlMap resource="egovframework/sqlmap/bodyMassIndexTimeView/bodyMassIndexTimeView.xml" />
+	<sqlMap resource="egovframework/sqlmap/bodyMassIndexTrandView/bodyMassIndexTrandView.xml" />
+	
+	<!-- 활동 -->
+	<sqlMap resource="egovframework/sqlmap/activityTimeView/activityTimeView.xml" />
+	<sqlMap resource="egovframework/sqlmap/activityTrandView/activityTrandView.xml" />
+	
+	<!-- 종합분석 -->
+	<sqlMap resource="egovframework/sqlmap/comprehensiveAnalysis/comprehensiveAnalysis.xml" />
+	
+	<sqlMap resource="egovframework/sqlmap/contents/contents.xml" />
+    
+    
+</sqlMapConfig>

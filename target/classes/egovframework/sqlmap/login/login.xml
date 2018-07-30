@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="login">
+
+
+	<!-- 로그인 -->    
+    <select id="login" resultClass="retail.login.service.LoginVO" >
+        <![CDATA[
+         SELECT T1.PATIENT_CD,
+			       T1.HSPTL_CD,
+			       T1.USER_NM,
+			       T1.BRTHDY,
+			       T1.EMAIL,
+			       CRYPTO_AES256.DEC_AES(T1.TEL_NO) AS TEL_NO,
+			       T1.SEX,
+			       T1.HEIGHT,
+			       T1.HEIGHT_UNIT,
+			       T1.WEIGHT,
+			       T1.WEIGHT_UNIT,
+			       T1.BIGO
+			  FROM TBL_USER_INFO T1
+			 WHERE PATIENT_CD = #PATIENT_CD# AND USER_PW = CRYPTO_AES256.ENC_AES(#USER_PW#)
+        ]]>
+    </select>
+
+	<!-- 병원목록 조회 -->
+	 <select id="selectHsptlList" resultClass="retail.common.service.CommVO" >
+		 	SELECT 
+				       T1.HSPTL_CD,
+				       T1.HSPTL_NM
+				  FROM TBL_HSPTL_MST T1
+				  WHERE 1=1
+				  AND T1.DEL_YN='N' 
+	 </select>
+
+	<!-- 병원목록 조회 -->
+	 <select id="selectMemberId" resultClass="String" parameterClass="retail.login.service.LoginVO">
+		 	SELECT COUNT(1) AS CNT FROM TBL_USER_INFO WHERE PATIENT_CD = #PATIENT_CD#
+	 </select>
+
+	<!-- 로그인 이력 저장 -->
+	<insert id="insertLoginInfo" parameterClass="retail.login.service.LoginVO">
+			INSERT INTO TBL_USER_CONN_LOG 
+			(
+				LOG_SEQ,
+				PATIENT_CD,
+				REG_DTTM,
+				REG_IP
+			) VALUES
+			(
+				LOG_SEQ.NEXTVAL,
+				#PATIENT_CD#,
+				SYSDATE,
+				#REG_IP#
+			)
+			
+	</insert>
+	
+	<!-- 사용자등록 -->
+	<update id="insertMemberInfo" parameterClass="java.util.HashMap">
+			INSERT INTO TBL_USER_INFO (PATIENT_CD,HSPTL_CD,USER_NM,USER_PW,BRTHDY,EMAIL,TEL_NO,DEL_YN,REG_DTTM) 
+			VALUES (#PATIENT_CD#,#HSPTL_CD#,#USER_NM#,CRYPTO_AES256.ENC_AES(#USER_PW#),#BRTHDY#,#EMAIL#,CRYPTO_AES256.ENC_AES(#TEL_NO#),'N',SYSDATE)
+	</update>
+	
+	<!-- 목표 의료마스터 등록  : 혈당 , 혈압, BMI-->
+	<update id="insertDiseaseInfo" parameterClass="java.util.HashMap">
+			DECLARE BEGIN
+
+				INSERT INTO TBL_TARGET_INFO 
+				(
+				   PATIENT_CD, 
+				   BS_BEFORE_MEAL_FROM, 
+				   BS_BEFORE_MEAL_TO, 
+				   BS_AFTER_MEAL_FROM, 
+				   BS_AFTER_MEAL_TO, 
+				   BP_SYSTOLE_FROM, 
+				   BP_SYSTOLE_TO, 
+				   BP_DIASTOLE_FROM, 
+				   BP_DIASTOLE_TO, 
+				   BMI_WEIGHT
+				) 
+				VALUES 
+				( 
+				    #PATIENT_CD#,
+				   (SELECT STDR_VALUE_FROM FROM TBL_DISEASE_STDR_INFO WHERE DISEASE_CD ='0001' AND MEASURE_GB = '000' AND DISEASE_STATE = '02'),
+				   (SELECT STDR_VALUE_TO FROM TBL_DISEASE_STDR_INFO WHERE DISEASE_CD ='0001' AND MEASURE_GB = '000' AND DISEASE_STATE = '02'),
+				   (SELECT STDR_VALUE_FROM FROM TBL_DISEASE_STDR_INFO WHERE DISEASE_CD ='0001' AND MEASURE_GB = '999' AND DISEASE_STATE = '02'),
+				   (SELECT STDR_VALUE_TO FROM TBL_DISEASE_STDR_INFO WHERE DISEASE_CD ='0001' AND MEASURE_GB = '999' AND DISEASE_STATE = '02'),
+				   (SELECT STDR_VALUE_FROM FROM TBL_DISEASE_STDR_INFO  WHERE DISEASE_CD ='0002' AND MEASURE_GB = '01' AND DISEASE_STATE = '02'),
+				   (SELECT STDR_VALUE_TO FROM TBL_DISEASE_STDR_INFO  WHERE DISEASE_CD ='0002' AND MEASURE_GB = '01' AND DISEASE_STATE = '02'),
+				   (SELECT STDR_VALUE_FROM FROM TBL_DISEASE_STDR_INFO  WHERE DISEASE_CD ='0002' AND MEASURE_GB = '02' AND DISEASE_STATE = '02'),
+				   (SELECT STDR_VALUE_TO FROM TBL_DISEASE_STDR_INFO  WHERE DISEASE_CD ='0002' AND MEASURE_GB = '02' AND DISEASE_STATE = '02'),
+				   '0'
+				);
+				
+	    	END; 
+	</update>
+	
+	<!-- SELECT    CD_ID AS BS_MEASURE_POINT
+		  ,         CD_NM AS BS_MEASURE_NAME
+		    FROM TBL_COMM_CODE_INFO
+		   WHERE CD_CL = 'CD0001'
+		ORDER BY SORT_ORDER -->
+	<select id="getRoleCodeApi" resultClass="retail.common.service.CommVO">
+		  
+		
+		SELECT
+		    CD_ID AS BS_MEASURE_POINT
+		    ,CD_NM AS BS_MEASURE_NAME
+		FROM 
+		    TBL_COMM_CODE_INFO
+		WHERE 
+		    CD_CL='CD0001'    
+		    AND DEL_YN='N'
+		    AND  LNG_GB=#lang#
+		ORDER BY SORT_ORDER
+	</select>
+	
+	
+	<!-- 비밀번호변경 -->
+	<update id="changeMyPasswd" parameterClass="java.util.HashMap">
+		UPDATE TBL_USER_INFO SET
+    		USER_PW=CRYPTO_AES256.ENC_AES(#NEW_USER_PW#)
+		WHERE 
+    		PATIENT_CD=#PATIENT_CD#
+    		AND USER_PW=CRYPTO_AES256.ENC_AES(#USER_PW#)
+	</update>
+	
+</sqlMap>

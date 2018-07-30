@@ -1,0 +1,17 @@
+package retail.bodyMassIndexMst.service;
+
+import java.util.List;
+import java.util.Map;
+
+import retail.login.service.LoginVO;
+
+
+public interface BodyMassIndexMstService {
+	
+	List<BodyMassIndexMstVO> selectMeasurePointList(String lang);
+	
+	int insertBsMeasureInfo(Map<String, Object> param);
+
+	int updateBsMeasureInfo(Map<String, Object> param);
+	
+}

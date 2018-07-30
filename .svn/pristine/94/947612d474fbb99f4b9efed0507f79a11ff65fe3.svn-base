@@ -1,0 +1,155 @@
+#\uacf5\ud1b5 \uba54\uc138\uc9c0
+msgSaveConfirm=Do you want to save it?
+msgSave=Saved.
+msgModifyConfirm=Do you want to edit it?
+msgModify=It is changed.
+msgDeleteConfirm=Are you sure you want to delete?
+msgDelete=Removed.
+
+#\uacf5\ud1b5 \ubc84\ud2bc
+btnNew=Create
+btnSave=Save
+btnDel=Delete
+btnSearch=Search
+
+#\uadf8\ub9ac\ub4dc TEXT
+korean=Korean
+english=English
+czechia=Czechia
+langSetting=Language setting
+customerCode=Customer code
+passWord=Password
+autoLogin=Auto-Login
+settingLang=Language setting
+login=Login
+findPass=Find password
+signUp=Sign Up
+maximum=Maximum
+minimum=Minimum
+average=Average
+totalMeasured=Total measured
+veryHighs=Very highs
+highs=Highs
+normal=Normal
+nows=Lows
+
+#\uba54\uc138\uc9c0 (\uc7a5\ubb38)
+msgLogin1=Forgot your password?
+msgLogin2=Are you new?
+msgLogin3=Please enter your ID.
+msgLogin4=Please enter your password.
+msgLogin5=Please check your ID password.
+
+#\uba54\uc778\ud654\uba74 TEXT
+msgMain1=Recent measurement information
+msgMain2=Last 7 days information
+
+#\ud608\ub2f9\uc218\ub3d9\uc785\ub825
+glucoseLevel=Glucose level
+timePeriod=Time period
+select=Select
+bsInputAlert1=Please enter your blood glucose level
+bsInputAlert2=Please enter measurement date.
+bsInputAlert3=Please enter measurement time.
+bsInputAlert4=Please select time period.
+bsInputAlert5=Manual blood glucose input was completed.
+bsInputAlert6=An error occurred during manual blood glucose level input. Contact your manager
+bsInputAlert7=Blood glucose level modification is complete.
+bsInputAlert8=An erroe occurred in modifying your blood glucose level. Contact your manager
+
+#\ud608\ub2f9\ub9ac\ud3ec\ud2b8
+bloodGlucoseReport=Blood glucose report
+timeLine=Timeline
+trends=Trends
+dateReverseSort=Date Reverse Sort
+dateforwardsort=Date forward sort
+bsTimeLineAlert1=The maximum view period is 30 days. Please select the view date again
+fasting=Fasting
+beforeMeal=Before meal
+afterMeal=After meal
+beforeSleeping=Before sleeping
+week1=1week
+month1=1month
+month3=3months
+normalMin=Normal Min
+normalMax=Normal Max
+normal=Normal
+
+#\ud608\uc555\uc218\ub3d9\uc785\ub825
+systole=Systole
+diastole=Diastole
+heartRate=Heart Rate
+bpInputAlert1=Please enter your systole level
+bpInputAlert2=Please enter your diastole level
+bpInputAlert3=Please enter your heart rate
+bsInputAlert4=Manual blood pressure input was completed.
+bsInputAlert5=An error occurred during manual blood pressure level input. Contact your manager.
+bsInputAlert6=Blood pressure level modification is complete.
+bsInputAlert7=An erroe occurred in modifying your blood pressure level. Contact your manager
+
+#\uc124\uc815(\uc88c\uce21\uba54\ub274)
+home=Home
+bloodGlucose=Blood glucoce
+measurement=Measurement
+manuallyMeasurement=Manually measurement
+report=Report
+bloodPressure=Blood Pressure
+bmi=BMI
+activity=Activity
+comprehensiveAnalysis=Comprehensive analysis 
+
+#\uc124\uc815(\uc6b0\uce21\uba54\ub274)
+settings=Settings
+userProfile=User Profile
+physicalInformation=Physical information
+goalSetting=Goal Setting
+devices=Devices
+alarm=Alarm
+language=Language
+privacyStatement=Privacy statement
+version=Version
+howToUse=How to use
+changePassword=Change Password
+logout=Logout
+
+#\uac74\uac15\uc815\ubcf4
+physicalInfoAlert1=Please enger your height
+physicalInfoAlert2=Please enter your weight
+physicalInfoAlert3=Your physical information is registered
+physicalInfoAlert4=An error occurred in saving your physical information. Contact your manager
+male=Male
+female=Female
+height=Height
+weight=Weight
+
+#\uc0ac\uc6a9\uc790 \ub3d9\ub85d & \uc0ac\uc6a9\uc790 \uc815\ubcf4
+userInfoAlert1=Please input your name
+userInfoAlert2=Please choose a hospital
+userInfoAlert3=Please enter customer code (ID)
+userInfoAlert4=Please enter your password
+userInfoAlert5=Please enter your password verification
+userInfoAlert6=The password and password vefication was wrong.
+userInfoAlert7=Please check your password (6 ~ 20 characters, mixed alphanumeric)
+userInfoAlert8=Please enter your birth date
+userInfoAlert9=Please enter your email
+userInfoAlert10=Email format is incorrect
+userInfoAlert11=Please enter your mobile number
+userInfoAlert12=You can enter only numbers for mobile number.
+userInfoAlert13=The customer code (ID) already exists.
+userInfoAlert14=User registration is completed. Please use it after log-in.
+userInfoAlert15=An error occurred in user registration. Contact your manager
+userInfoAlert16=User profile modification is complete.
+userInfoAlert17=An erroe occurred in modifying your profile. Contact your manager
+userInfoAlert18=This item is essential and you can input only numbers
+name=Name
+hospital=Hospital
+#customerCode=\uace0\uac1d\ucf54\ub4dc
+userInfoMsg1=Please enter the customer code issued by the hospital.
+#passWord=\ube44\ubc00\ubc88\ud638
+userInfoMsg2=Please enter 6 to 10 digits.
+confirmPassWord=Confirm Password
+birthday=birthDay
+email=Email
+mobileNumber=Mobile Number
+numberOnly=Number Only
+userInfoMsg3=Hospital and customer codes can not be modified.

@@ -1,0 +1,19 @@
+$(document).ready(function (){
+	// 탭
+	$(".bg_trend .tab_btn > ul > li > a").on("click",function  () {
+		var tabBtn = $(".tab_btn");
+		var tabCnt = $(".tab_cnt");
+
+		// 1) 버튼 on
+		$(this).parent().addClass('on').siblings().removeClass('on');
+
+		// 2) 콘텐츠 on
+		tabCnt.find(' > div').eq($(this).parent().index()).show().siblings().hide();
+		return false;
+	});
+	
+	// 버튼 설정
+	$(".btn_select button[type='button']").on("click",function  () {
+		$(this).addClass("on").siblings().removeClass("on");
+	}); 	
+});

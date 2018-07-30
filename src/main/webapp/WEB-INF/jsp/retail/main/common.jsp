@@ -1,0 +1,354 @@
+<%@ page language="java"   contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@page import="retail.common.BaseEnv" %>
+<%@page import="retail.common.CommonUtil" %>
+<%@page import="retail.common.SessionModel" %>
+<%@page import ="java.util.List" %>
+<%@page import ="java.util.HashMap" %>
+<%@page import ="java.util.ArrayList" %>
+<%@page import ="java.util.List" %>
+<%@page import ="retail.main.service.MainVO" %>
+<!-- 다국어 프로퍼티 변수와 스프링 메세지 사용을 위한  스크립트 전역 변수와의 맵핑을 위한 include -->
+<%@include file="/WEB-INF/jsp/retail/inc_language/inc_language.jsp" %>
+<script type="text/javascript" src="/resources/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/resources/js/comm.js"></script>
+<script type="text/javascript" src="/resources/js/datetime.js"></script>
+<link rel="stylesheet" href="/resources/css/mobiscroll-1.6.min.css" /> 
+<script type="text/javascript" src="/resources/js/mobiscroll-1.6.js" ></script>
+<script type="text/javascript" src="/resources/js/jquery.cookie.js" ></script>
+<script type="text/javascript">
+var SEX = "";
+var WEIGHT = "";
+var WEIGHT_UNIT = "";
+var HEIGHT = "";
+var HEIGHT_UNIT = "";
+$(document).ready(function () {
+	$('.calendar').scroller('destroy').scroller({ 
+	 	width: 60.66666666666667,
+		theme: 'default'
+	});
+	
+    $('.time').scroller('destroy').scroller({ 
+	   	 preset: 'time',  
+	   	 width: 95,           	 
+	   	 theme: 'default'
+    });
+   
+  	//사용자 몸무게, 단위 조회
+	jQuery.ajax({
+	    type:"POST",
+	    url:"/getSelectHealthInfo.do", 
+	    dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+	    //data:loadData,
+	    async:false,
+	    success : function(data) {
+		   	SEX= data.SEX;
+	    	WEIGHT= data.WEIGHT;
+	    	WEIGHT_UNIT= data.WEIGHT_UNIT;
+	    	HEIGHT= data.HEIGHT;
+	    	HEIGHT_UNIT= data.HEIGHT_UNIT;
+	    },
+	    complete : function(data) {
+	    },
+	    error : function(xhr, status, error) {
+	    	//CommonJs.alertErrorStatus(xhr.status, error);
+	    }
+	});
+  	
+  	/**
+  	* 다국어를 위한 공통 셋팅 시작
+  	**/
+	//get 파라메터 lang값 추출
+	var param = $(location).attr('search').slice($(location).attr('search').indexOf('=') + 1);
+
+	//언어 전역변수 설정
+	setLang(param);
+});	
+      
+//언어 셋팅
+function setLang(val){
+	lang = val;
+}
+
+      /*=========--- 공통 메뉴 ---============*/
+	    // 초기 설정 - 숨기기
+	    $("#gnb, #snb").hide();
+	
+	    // 메뉴 열기
+	    function menuBtn() {
+	    	$("body").after("<div class='over_bg' onClick='overBg()'></div>")
+	    	$("#gnb").show().animate({left:'0%'});
+	    }
+	
+	    // 설정 열기
+	    function setupBtn() {
+	    	$("body").after("<div class='over_bg' onClick='overBg()'></div>")
+	    	$("#snb").show().animate({right:'0%'});
+	    }
+	
+	    // 메뉴 닫기
+	    function closeBtn1() {
+	    	$("#gnb").animate({left:'-85%'});
+	    	$(".over_bg").remove();
+	    }
+	    
+	    // 설정 닫기
+	    function closeBtn2() {
+	    	$("#snb").animate({right:'-85%'});
+	    	$(".over_bg").remove();
+	    }
+	    
+	    // 하단에 깔린 투명 배경 클릭시 메뉴 닫기 
+	    function overBg() {
+	    	$("#gnb").animate({left:'-85%'});
+	    	$("#snb").animate({right:'-85%'});
+	    	$(".over_bg").remove();
+	    }			    
+	    
+   		//버전 화면으로 이동
+		function goVersion(){
+			location.href='/version.do?lang='+lang;
+		}	
+
+ 		//혈당수동입력 화면으로 이동
+ 		function bloodGlucoseMst(){
+ 			location.href='/bloodGlucoseMst.do?lang='+lang;
+ 		}	
+
+ 		//혈당리포트 화면으로 이동
+ 		function bloodGlucoseTimeView(){
+ 			location.href='/bloodGlucoseTimeView.do?lang='+lang;
+ 		}	
+ 		
+ 	    //혈압수동입력 화면으로 이동
+ 		function bloodPressureMst(){
+ 			location.href='/bloodPressureMst.do?lang='+lang;
+ 		}	
+
+ 		//혈압리포트 화면으로 이동
+ 		function bloodPressureTimeView(){
+ 			location.href='/bloodPressureTimeView.do?lang='+lang;
+ 		}
+ 		
+ 		//혈압리포트의 트렌드 화면으로 이동
+ 		function bloodPressureTrandView(){
+ 			location.href='/bloodPressureTrandView.do?lang='+lang;
+ 		}		
+ 		
+ 		//BMI수동입력 화면으로 이동
+ 		function bodyMassIndexMst(){
+ 			location.href='/bodyMassIndexMst.do?lang='+lang;
+ 		}	
+
+ 		//혈압리포트 화면으로 이동
+ 		function bodyMassIndexTimeView(){
+ 			location.href='/bodyMassIndexTimeView.do?lang='+lang;
+ 		}
+ 		
+ 		//혈압리포트의 트렌드 화면으로 이동
+ 		function bodyMassIndexTrandView(){
+ 			location.href='/bodyMassIndexTrandView.do?lang='+lang;
+ 		} 		
+ 		
+ 		//활동리포트 화면으로 이동
+ 		function activityTimeView(){
+ 			location.href='/activityTimeView.do?lang='+lang;
+ 		}
+ 		
+ 		//활동리포트 화면으로 이동
+ 		function activityTrandView(){
+ 			location.href='/activityTrandView.do?lang='+lang;
+ 		}		
+ 		
+ 		//종합분석 화면으로 이동
+ 		function comprehensiveAnalysis(){
+ 			location.href='/comprehensiveAnalysis.do?lang='+lang;
+ 		}
+ 		
+ 		//사용자정보 화면으로 이동
+ 		function userInfoMst(){
+ 			location.href='/userInfoMst.do?lang='+lang;
+ 		}	
+
+ 		//건강정보 화면으로 이동
+ 		function healthView(){
+ 			location.href='/healthView.do?lang='+lang;
+ 		}	
+ 		
+ 		//목표설정 | 혈당 화면으로 이동
+ 		function goalSettingBloodGlucose(){
+ 			location.href='/goalSettingBloodGlucose.do?lang='+lang;
+ 		}
+ 		
+ 		//목표설정 | 혈압 화면으로 이동
+ 		function goalSettingBloodPressure(){
+ 			location.href='/goalSettingBloodPressure.do?lang='+lang;
+ 		}
+
+ 		//목표설정 | BMI 화면으로 이동
+ 		function goalSettingBodyMassIndex(){
+ 			location.href='/goalSettingBodyMassIndex.do?lang='+lang;
+ 		}
+
+ 		//관리항목 화면으로 이동
+ 		function healthManagement(){
+ 			location.href='/healthManagement.do?lang='+lang;
+ 		}	
+
+ 		//언어 화면으로 이동
+ 		function languageMst(){
+ 			location.href='/languageMst.do?lang='+lang;
+ 		}	
+
+ 		//개인정보취급방침 화면으로 이동
+ 		function privacyStatement(){
+ 			location.href='/privacyStatement.do?lang='+lang;
+ 		}	
+ 		
+ 		//사용방법 이동
+ 		function howToUse(){
+ 			location.href='/UseManual.do?lang='+lang;
+ 		}
+ 		
+ 		//비밀번호 변경 이동
+ 		function goPassChange(){
+ 			location.href='/goPassChange.do?lang='+lang;
+ 		}
+		
+ 		//로그아웃
+ 		function logOut(){
+ 			location.href='/logout.do?lang='+lang;
+ 		}
+      			      
+</script>
+<%!
+
+HttpServletRequest req;
+HttpServletResponse res;
+
+
+/** session 에 저장된 환경정보 반환 */
+SessionModel getEnv() {
+	return CommonUtil.getEnv(req.getSession());
+}
+%>
+<%
+this.req = request;
+this.res = response;
+%>
+<%
+	 String redirectURL = "/login.do";
+	 if(getEnv().getUSER_NM() == null){
+	 	response.sendRedirect(redirectURL);	
+	 }
+%>
+
+
+<%
+
+
+	HttpSession Session = request.getSession(true);  
+	Session.setAttribute("PATIENT_CD", getEnv().getPATIENT_CD()); 
+	Session.setAttribute("USER_NM", getEnv().getUSER_NM());
+	Session.setAttribute("WEIGHT", getEnv().getWEIGHT());
+	Session.setAttribute("WEIGHT_UNIT", getEnv().getWEIGHT_UNIT());
+
+
+%>
+
+<script> 
+
+/******************************
+ *안드로이드 에서 호출되는 공통 함수 API  * 
+ ******************************/
+var PATIENT_CD = "${sessionScope.PATIENT_CD}";
+
+var version = 0;
+
+//환자코드 호출
+function getPatientCd(){
+	alert(PATIENT_CD);
+}
+
+
+//측정시기 조회 API JSON RETURN
+function getRoleCodeApi(){
+	jQuery.ajax({
+	    type:"POST",
+	    url:"/getRoleCodeApi.do", 
+	    dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+	    //data:loadData,
+	    async:false,
+	    success : function(data) {
+			/* for(var i = 0; i < data.length; i++){
+				alert(data);
+		   	} */
+	    	alert(data);
+	    },
+	    complete : function(data) {
+	    },
+	    error : function(xhr, status, error) {
+	    	//CommonJs.alertErrorStatus(xhr.status, error);
+	    }
+	});
+}
+
+
+//사용자정보 가지고오기 API(사용자코드, 몸무게)
+function getUserInfo(){
+	alert("retailtech://getUserInfo?PATIENT_CD="+PATIENT_CD+"&WEIGHT="+WEIGHT+"&WEIGHT_UNIT="+WEIGHT_UNIT);
+}
+
+//메인화면으로 이동
+function goMain(){
+	//메뉴닫기
+	closeBtn1();
+	location.href='/main.do?lang='+lang;
+}
+
+
+//혈당 블루투스 측정이동가기
+function goBtBloodGlucoseMst(){
+	//메뉴닫기
+	closeBtn1();
+	alert("retailtech://goBtBloodGlucoseMst");
+}
+
+//혈압 블루투스 측정이동가기
+function goBtBloodPressureMst(){
+	//메뉴닫기
+	closeBtn1();
+	alert("retailtech://goBtBloodPressureMst");
+}
+
+//BMI 블루투스 측정이동가기
+function goBtBodyMassIndexMst(){
+	//메뉴닫기
+	closeBtn1();
+	alert("retailtech://goBtBodyMassIndexMst");
+}
+
+//설정화면가기
+function goSetting(){
+	//메뉴닫기
+	closeBtn2();
+	alert("retailtech://goSetting");
+}
+
+//알람설정 이동
+function goAlarm(){
+	//메뉴닫기
+	closeBtn2();
+	alert("retailtech://goAlarm");
+}
+
+
+//버전 넣기
+function setVersion(val){
+	//version = val;
+	$.cookie('version', val);
+}
+
+
+</script>

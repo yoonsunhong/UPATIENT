@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="bodyMassIndexMst">
+	
+	<!-- BMI입력 -->
+	<update id="insertBmiMeasureInfo" parameterClass="java.util.HashMap">
+		<![CDATA[
+			INSERT INTO TBL_BMI_MEASURE_INFO
+			(
+			    MEASURE_SEQ
+			    ,PATIENT_CD
+			    ,WEIGHT
+			    ,MUSCLE_QY
+			    ,FAT_QY
+			    ,FAT_RATE
+			    ,BMI
+			    ,BONE_QY
+			    ,MOIST_QY
+			    ,VIS_FAT_LVL
+			    ,MEASURE_DT
+			    ,MEASURE_TIME
+			    ,BMI_STATE
+			    ,DEL_YN
+			    ,REG_DTTM
+			)
+			SELECT 
+			    BMI_MEASURE_SEQ.NEXTVAL
+			    ,'PA001'
+			    ,CRYPTO_AES256.ENC_AES(#WEIGHT#)
+			    ,CRYPTO_AES256.ENC_AES(#MUSCLE_QY#)
+			    ,CRYPTO_AES256.ENC_AES(#FAT_QY#)
+			    ,CRYPTO_AES256.ENC_AES(#FAT_RATE#)
+			    ,CRYPTO_AES256.ENC_AES(#BMI#)
+			    ,CRYPTO_AES256.ENC_AES(#BONE_QY#)
+			    ,CRYPTO_AES256.ENC_AES(#MOIST_QY#)
+			    ,CRYPTO_AES256.ENC_AES(#VIS_FAT_LVL#)
+			    ,#MEASURE_DT#
+			    ,#MEASURE_TIME#
+			    ,DISEASE_STATE
+			    ,'N'
+			    ,SYSDATE 
+			FROM 
+			    TBL_DISEASE_STDR_INFO 
+			WHERE 
+			    DISEASE_CD='0003' 
+			    AND MEASURE_GB='01' 
+			    AND STDR_VALUE_FROM<=#BMI# 
+			    AND STDR_VALUE_TO>=#BMI# 
+		]]>
+	</update>
+	
+	<!-- BMI업데이트 -->
+	<update id="updateBmiMeasureInfo" parameterClass="java.util.HashMap">
+	</update>
+
+</sqlMap>

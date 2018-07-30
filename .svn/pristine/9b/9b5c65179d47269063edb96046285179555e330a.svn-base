@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="goalSettingBloodGlucose">
+
+	<!-- 혈당 목표정보 조회 -->
+	<select id="selectBsGoalInfo" parameterClass="java.util.HashMap" resultClass="retail.goalSettingBloodGlucose.service.GoalSettingBloodGlucoseVO" >
+		SELECT 
+		    BS_BEFORE_MEAL_FROM
+		    ,BS_BEFORE_MEAL_TO
+		    ,BS_AFTER_MEAL_FROM
+		    ,BS_AFTER_MEAL_TO 
+		FROM 
+		    TBL_TARGET_INFO
+		WHERE 
+		    PATIENT_CD=#PATIENT_CD#
+		
+	</select>
+	
+	<!-- 혈당 목표정보 업데이트 -->
+	<update id="updateBsGoalInfo" parameterClass="java.util.HashMap">
+		UPDATE TBL_TARGET_INFO SET
+			BS_BEFORE_MEAL_FROM=#BS_BEFORE_MEAL_FROM#
+		    ,BS_BEFORE_MEAL_TO=#BS_BEFORE_MEAL_TO#
+		    ,BS_AFTER_MEAL_FROM=#BS_AFTER_MEAL_FROM#
+		    ,BS_AFTER_MEAL_TO =#BS_AFTER_MEAL_TO#
+		WHERE PATIENT_CD = #PATIENT_CD#
+	</update>
+	
+	
+</sqlMap>

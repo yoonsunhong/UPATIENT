@@ -1,0 +1,96 @@
+<%@ page language="java"   contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@page import="retail.common.BaseEnv" %>
+<%@page import="retail.common.CommonUtil" %>
+<%@page import="retail.common.SessionModel" %>
+<%@page import ="java.util.List" %>
+<%@page import ="java.util.HashMap" %>
+<%@page import ="java.util.ArrayList" %>
+<%@page import ="java.util.List" %>
+<%@page import ="retail.main.service.MainVO" %>
+<!-- <script type="text/javascript" src="/resources/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/resources/js/comm.js"></script>
+<script type="text/javascript" src="/resources/js/datetime.js"></script>
+<link rel="stylesheet" href="/resources/css/mobiscroll-1.6.min.css" /> 
+<script type="text/javascript" src="/resources/js/mobiscroll-1.6.js" ></script> -->
+<script type="text/javascript">
+ 	$(document).ready(function () {
+		/*=========--- 공통 메뉴 ---============*/
+/* 		var $gnb = $("#gnb");
+		var $snb = $("#snb");
+		
+		$gnb,$snb.hide();
+		
+		// 메뉴 열기
+		function menuBtn() {
+			$("body").after("<div class='over_bg'></div>")
+			$("#gnb").show().animate({left:'0%'});
+		}
+		
+		// 메뉴 닫기
+		function closeBtn1() {
+			$(".over_bg").hide();
+			$("#gnb").animate({left:'-68%'}).hide();
+		}
+		 */
+	});	
+ 	
+ 	function goLeftMenu(){
+ 		alert("서비스 준비중입니다.");
+ 		return;
+ 	}
+</script>
+<body>
+		<!-- 왼쪽 메뉴 시작 -->
+		<div id="gnb">
+			<div class="user_info">
+				<div class="clear">
+					<p class="f_l"><img src="/resources/images/icon/user.png"><span><%=getEnv().getUSER_NM() %>님</span></p>
+					<button type="button" class="close_btn f_r" onClick="closeBtn1()">메뉴 영역 닫기</button>				
+				</div>
+				<div class="home"><a href="#" onClick="goMain()">메인으로</a></div>
+			</div>
+			<nav>
+				<ul>
+					<li>
+						<p>혈당</p>
+						<ul>
+							<li><a href="#" onClick="goBtBloodGlucoseMst()">측정</a></li>
+							<li><a href="#" onClick="bloodGlucoseMst()">수동 입력</a></li>
+							<li><a href="#" onClick="bloodGlucoseTimeView()">리포트</a></li>
+						</ul>					
+					</li>
+					<li>
+						<p>혈압</p>
+						<ul>
+							<li><a href="#" onclick="goLeftMenu()">측정</a></li>
+							<li><a href="#" onclick="goLeftMenu()">수동 입력</a></li>
+							<li><a href="#" onclick="goLeftMenu()">리포트</a></li>
+						</ul>					
+					</li>
+					<li>
+						<p>BMI</p>
+						<ul>
+							<li><a href="#" onclick="goLeftMenu()">측정</a></li>
+							<li><a href="#" onclick="goLeftMenu()">수동 입력</a></li>
+							<li onclick="goLeftMenu()"><a href="#">리포트</a></li>
+						</ul>					
+					</li>
+					<li>
+						<p>활동</p>
+						<ul>
+							<li onclick="goLeftMenu()"><a href="#">리포트</a></li>
+						</ul>					
+					</li>					
+					<li>
+						<p>종합분석</p>
+						<ul>
+							<li onclick="goLeftMenu()"><a href="#">종합분석</a></li>
+						</ul>					
+					</li>		
+				</ul>
+			</nav>
+		</div>
+		<!-- 왼쪽 메뉴 끝 -->
+</body>
